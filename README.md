@@ -1,4 +1,4 @@
-falamoore_plugin
+falamoore plugin
 ================
 
 Falamoore plugin
