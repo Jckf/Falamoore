@@ -1,0 +1,8 @@
+Falamoore plugin TODO list:
+
+- Gruppesystem
+	- Permissions
+
+- Blokkprotection
+	- Sone #1
+	- Per spiller #2
