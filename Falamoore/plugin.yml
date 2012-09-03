@@ -1,0 +1,4 @@
+name: Falamoore
+version: 0.0.1
+description: The complete falamoore plugin
+main: com.falamoore.plugin.Main
