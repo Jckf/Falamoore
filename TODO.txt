@@ -1,8 +1,33 @@
-Falamoore plugin TODO list:
+Group system
+    The following ranks are planned: [Traveler], User (Just plain username), [Jarl], [Archduke] and [Emperor]
+    Their respective permissions will be decided at a later point
+    
+Promote/Demote
+    only ranks above User can promote(Jarl, Archduke, Emperor), must be equal to or less than your level (Jarl cannot promote to Archduke or Emperor, Archduke cannot promote to Emperor)
 
-- Gruppesystem
-	- Permissions
+Block protection
+    Per player
+    Zoning (WorldGuard like functionality)
 
-- Blokkprotection
-	- Sone #1
-	- Per spiller #2
+Temp/Kick/Ban/
+    Per player, per IP.
+
+Bank system
+    zones act as bank zone. players can insert cash (unit not decided yet), into their virtual bank account. only insert money in the bank zones. withdrawal not yet decided
+
+Race system
+    Elves
+        faster (swiftness II?), jump higher (2x?), 1/4? fall damage, mine 10% slower
+
+    Dwarves
+        100% faster mining, walks 20% slower normal.
+
+    Humans
+        gain additional 5% when trading
+
+Transportation
+    Minecart
+        secondary transportation method, constant speed
+
+    Boat
+        act as warps. travel between every major city.
