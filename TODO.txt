@@ -17,10 +17,10 @@ Bank system
 
 Race system
     Elves
-        faster (swiftness II?), jump higher (2x?), 1/4? fall damage, mine 10% slower
+        faster (swiftness II?), jump higher (2x?), 1/4? fall damage, mine 10% slower ---> NEEDS TESTING
 
     Dwarves
-        100% faster mining, walks 20% slower normal.
+        100% faster mining, walks 20% slower than normal. ---> NEEDS TESTING
 
     Humans
         gain additional 5% when trading
