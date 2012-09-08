@@ -47,6 +47,10 @@ public class MySQL {
     public Connection getConnection() {
         return this.connection;
     }
+    
+    public boolean isConnected() {
+        return this.connection != null;
+    }
 
     public boolean insert(String table, String[] column, String[] value) {
         Statement statement = null;

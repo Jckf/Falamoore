@@ -1,9 +1,9 @@
 Group system
-    The following ranks are planned: [Traveler], User (Just plain username), [Jarl], [Archduke] and [Emperor]
+    The following ranks are planned: [Traveler], no-rank, [Jarl], [Archduke] and [Emperor]
     Their respective permissions will be decided at a later point
     
 Promote/Demote
-    only ranks above User can promote(Jarl, Archduke, Emperor), must be equal to or less than your level (Jarl cannot promote to Archduke or Emperor, Archduke cannot promote to Emperor)
+    only ranks above User can promote(Jarl, Archduke, Emperor), the new rank must be less than your level (Jarl cannot promote to Jarl, Archduke or Emperor, Archduke cannot promote to Archduke or Emperor)
 
 Block protection
     Per player
@@ -13,7 +13,7 @@ Temp/Kick/Ban/
     Per player, per IP.
 
 Bank system
-    zones act as bank zone. players can insert cash (unit not decided yet), into their virtual bank account. only insert money in the bank zones. withdrawal not yet decided
+    zones that act as banks. players can insert cash (unit not decided yet), into their virtual bank account.
 
 Race system
     Elves
