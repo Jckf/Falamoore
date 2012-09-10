@@ -10,7 +10,7 @@ Block protection
     Zoning (WorldGuard like functionality)
 
 Temp/Kick/Ban/
-    Per player, per IP.
+    Per player.
 
 Bank system
     zones that act as banks. players can insert cash (unit not decided yet), into their virtual bank account.

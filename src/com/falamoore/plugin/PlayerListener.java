@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class PlayerListener implements Listener {
 
@@ -31,37 +33,43 @@ public class PlayerListener implements Listener {
                 BanKick.unban(e.getPlayer());
                 e.allow();
             }
-            Date d = new Date(BanKick.getExpirationDate(e.getPlayer()));
+            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer()));
             e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
         }
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
-        String race = getRace(e.getPlayer());
-        ArrayList<String> newmap = playerrace.get(race);
+        final String race = getRace(e.getPlayer());
+        final ArrayList<String> newmap = playerrace.get(race);
         newmap.add(e.getPlayer().getName());
         playerrace.put(race, newmap);
+        if (race.equalsIgnoreCase("Elf")) {
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 2));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 300, 2));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 1));
+        } else if (race.equalsIgnoreCase("Dwarf")) {
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 300, 2));
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 300, 2));
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        String race = getRace(e.getPlayer());
-        ArrayList<String> newmap = playerrace.get(race);
+        final String race = getRace(e.getPlayer());
+        final ArrayList<String> newmap = playerrace.get(race);
         newmap.remove(e.getPlayer().getName());
         playerrace.put(race, newmap);
     }
 
-    // TODO GET TABLE!!
-
     private String getRace(Player s) {
         try {
-            ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
+            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
             temp.first();
-            String me = temp.getString("Race");
+            final String me = temp.getString("Race");
             temp.close();
             return me;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -9,12 +9,13 @@ import org.bukkit.potion.PotionEffectType;
 import com.falamoore.plugin.database.MySQL;
 
 public class Main extends JavaPlugin {
-    
+
     static MySQL mysql;
     BanKick bankick;
 
     @Override
     public void onDisable() {
+        mysql.close();
     }
 
     @Override
@@ -30,22 +31,22 @@ public class Main extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                for (String s : PlayerListener.playerrace.keySet()) {
-                    for (String player : PlayerListener.playerrace.get(s)) {
+                for (final String s : PlayerListener.playerrace.keySet()) {
+                    for (final String player : PlayerListener.playerrace.get(s)) {
                         if (s.equalsIgnoreCase("Elf")) {
-                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 2, 200));
-                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 2, 200));
-                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1, 200));
+                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 2));
+                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 300, 2));
+                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 300, 1));
                         } else if (s.equalsIgnoreCase("Dwarf")) {
-                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 2, 200));
-                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2, 200));
-                        } 
+                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 300, 2));
+                            getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 300, 2));
+                        }
                     }
                 }
             }
-        }, 0, 300);        
+        }, 0, 300);
     }
-    
+
     private void createConfig() {
         getConfig().addDefault("database.host", "IP HERE");
         getConfig().addDefault("database.port", "PORT HERE");
@@ -55,23 +56,25 @@ public class Main extends JavaPlugin {
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
-    
+
     private void activateMySQL() {
-        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"), getConfig().getString("database.password"));
+        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"),
+                getConfig().getString("database.password"));
         try {
             mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Player VARCHAR(130), Banned BOOLEAN, BannedTo BIGINT, BanReason VARCHAR(130), Race VARCHAR(130))");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
     public MySQL getMySQL() {
         return mysql;
     }
-    
+
     private void registerCommands() {
-        bankick = new BanKick(this);
+        bankick = new BanKick();
         getCommand("ban").setExecutor(bankick);
         getCommand("kick").setExecutor(bankick);
+        getCommand("tempban").setExecutor(bankick);
     }
 }

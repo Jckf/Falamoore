@@ -47,7 +47,7 @@ public class MySQL {
     public Connection getConnection() {
         return this.connection;
     }
-    
+
     public boolean isConnected() {
         return this.connection != null;
     }

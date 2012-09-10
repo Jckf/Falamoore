@@ -13,17 +13,11 @@ import org.bukkit.entity.Player;
 
 public class BanKick implements CommandExecutor {
 
-    Main plugin;
-
-    public BanKick(Main plugin) {
-        this.plugin = plugin;
-    }
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
             if (args.length >= 2) {
-                OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
+                final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 if (pl == null) {
                     sender.sendMessage("No such player has played on the server before!");
                     return true;
@@ -33,7 +27,7 @@ public class BanKick implements CommandExecutor {
                     return true;
                 }
                 if (pl.isOnline()) {
-                    Player pl2 = (Player) pl;
+                    final Player pl2 = (Player) pl;
                     pl2.kickPlayer("You are banned!");
                 }
                 if (!setBanned(pl, Long.MAX_VALUE, giveReason(args))) {
@@ -47,18 +41,18 @@ public class BanKick implements CommandExecutor {
             }
         } else if (cmd.getName().equalsIgnoreCase("tempban")) {
             if (args.length >= 2) {
-                OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
-                Calendar d = Calendar.getInstance();
+                final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
+                final Calendar d = Calendar.getInstance();
                 try {
-                    String[] ds = args[1].split("/");
-                    int[] dateint = new int[5];
+                    final String[] ds = args[1].split("/");
+                    final int[] dateint = new int[5];
                     int i = 0;
-                    for (String s : ds) {
+                    for (final String s : ds) {
                         dateint[i] = Integer.parseInt(s);
                         i++;
                     }
                     d.set(dateint[2] + 1900, dateint[1], dateint[0], dateint[3], dateint[4]);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     sender.sendMessage("Invalid date format!");
                     sender.sendMessage("dd/mm/yy/hh/mm");
                     return true;
@@ -77,7 +71,7 @@ public class BanKick implements CommandExecutor {
                     return true;
                 }
                 if (pl.isOnline()) {
-                    Player pl2 = (Player) pl;
+                    final Player pl2 = (Player) pl;
                     pl2.kickPlayer("You are banned!");
                 }
                 if (!setBanned(pl, d.getTimeInMillis(), giveReason(args))) {
@@ -91,50 +85,48 @@ public class BanKick implements CommandExecutor {
             }
         } else if (cmd.getName().equalsIgnoreCase("kick")) {
             if (args.length >= 1) {
-                Player pl = Bukkit.getPlayer(args[0]);
+                final Player pl = Bukkit.getPlayer(args[0]);
                 pl.kickPlayer("You are kicked!\nReason:" + giveReason(args));
                 return true;
             }
         }
         return false;
     }
-    
+
     private String giveReason(String[] args) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 1;i<args.length;i++) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < args.length; i++) {
             sb.append(args[i]).append(" ");
         }
         return sb.toString().trim();
     }
 
-    // TODO GET TABLE!!
-    
     public static void unban(Player player) {
         try {
-            Main.mysql.query("UPDATE playerinfo SET Banned='false', BanReason=''BannedTo='0' WHERE Player='" + player.getName() + "'");
-        } catch (SQLException e) {
+            Main.mysql.query("UPDATE playerinfo SET Banned='false', BanReason=''BannedTo=0 WHERE Player='" + player.getName() + "'");
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
     }
 
     private boolean setBanned(OfflinePlayer pl, long date, String reason) {
         try {
-            Main.mysql.query("UPDATE playerinfo SET Banned='true', BanReason='"+reason+"'BannedTo='" + date + "' WHERE Player='" + pl.getName() + "'");
+            Main.mysql.query("UPDATE playerinfo SET Banned='true', BanReason='" + reason + "'BannedTo=" + date + " WHERE Player='" + pl.getName() + "'");
             return true;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
-    
+
     public static String getBanReason(String player) {
         try {
-            ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Plyer='"+player+"'");
+            final ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Plyer='" + player + "'");
             rs.next();
-            String reason = rs.getString("BanReason");
+            final String reason = rs.getString("BanReason");
             rs.close();
             return reason;
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -142,12 +134,12 @@ public class BanKick implements CommandExecutor {
 
     public static boolean isBanned(OfflinePlayer pl) {
         try {
-            ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + pl.getName() + "'");
+            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + pl.getName() + "'");
             temp.first();
-            boolean me = temp.getBoolean("Banned");
+            final boolean me = temp.getBoolean("Banned");
             temp.close();
             return me;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -155,12 +147,12 @@ public class BanKick implements CommandExecutor {
 
     public static long getExpirationDate(Player player) {
         try {
-            ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + player.getName() + "'");
+            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + player.getName() + "'");
             temp.first();
-            long me = temp.getLong("BannedTo");
+            final long me = temp.getLong("BannedTo");
             temp.close();
             return me;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return 0;
