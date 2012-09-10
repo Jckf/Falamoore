@@ -1,5 +1,7 @@
 package com.falamoore.plugin;
 
+import java.sql.SQLException;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -8,7 +10,7 @@ import com.falamoore.plugin.database.MySQL;
 
 public class Main extends JavaPlugin {
     
-    MySQL mysql;
+    static MySQL mysql;
     BanKick bankick;
 
     @Override
@@ -56,6 +58,11 @@ public class Main extends JavaPlugin {
     
     private void activateMySQL() {
         mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"), getConfig().getString("database.password"));
+        try {
+            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Player VARCHAR(130), Banned BOOLEAN, BannedTo BIGINT, BanReason VARCHAR(130), Race VARCHAR(130))");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     public MySQL getMySQL() {
@@ -64,6 +71,7 @@ public class Main extends JavaPlugin {
     
     private void registerCommands() {
         bankick = new BanKick(this);
+        getCommand("ban").setExecutor(bankick);
         getCommand("kick").setExecutor(bankick);
     }
 }

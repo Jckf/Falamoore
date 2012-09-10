@@ -1,29 +1,41 @@
 package com.falamoore.plugin;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.falamoore.plugin.database.MySQL;
 
 public class PlayerListener implements Listener {
 
-    final MySQL mysql;
     public static HashMap<String, ArrayList<String>> playerrace = new HashMap<String, ArrayList<String>>();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
     Main main;
-    
-    
+
     public PlayerListener(Main plugin) {
         main = plugin;
-        mysql = plugin.mysql;
     }
-    
+
+    @EventHandler
+    public void onPlayerLogin(PlayerLoginEvent e) {
+        if (BanKick.isBanned(e.getPlayer())) {
+            if (BanKick.getExpirationDate(e.getPlayer()) <= System.currentTimeMillis()) {
+                BanKick.unban(e.getPlayer());
+                e.allow();
+            }
+            Date d = new Date(BanKick.getExpirationDate(e.getPlayer()));
+            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
+        }
+    }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         String race = getRace(e.getPlayer());
@@ -40,11 +52,15 @@ public class PlayerListener implements Listener {
         playerrace.put(race, newmap);
     }
 
+    // TODO GET TABLE!!
+
     private String getRace(Player s) {
         try {
-            ResultSet temp = mysql.query("SELECT * FROM inserttablehere WHERE Player = '" + s.getName() + "'");
+            ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
             temp.first();
-            return temp.getString("Race");
+            String me = temp.getString("Race");
+            temp.close();
+            return me;
         } catch (Exception e) {
             e.printStackTrace();
         }
