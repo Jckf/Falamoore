@@ -2,3 +2,18 @@ name: Falamoore
 version: 0.0.1
 description: The complete falamoore plugin
 main: com.falamoore.plugin.Main
+commands:
+    kick:
+        usage: /<command>
+    ban:
+        usage: /<command>
+    ipban:
+        usage: /<command>
+    tempban:
+        usage: /<command>
+    tempipban:
+        usage: /<command>
+    promote:
+        usage: /<command>
+    demote:
+        usage: /<command>    

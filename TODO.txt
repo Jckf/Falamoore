@@ -1,16 +1,16 @@
 Group system
-    The following ranks are planned: [Traveler], no-rank, [Jarl], [Archduke] and [Emperor]
+    The following ranks are planned: [Traveler], no-rank, [Jarl], [Archduke] and [Emperor] ---> NEEDS TESTING
     Their respective permissions will be decided at a later point
     
 Promote/Demote
-    only ranks above User can promote(Jarl, Archduke, Emperor), the new rank must be less than your level (Jarl cannot promote to Jarl, Archduke or Emperor, Archduke cannot promote to Archduke or Emperor)
+    only ranks above User can promote(Jarl, Archduke, Emperor), the new rank must be less than your level (Jarl cannot promote to Jarl, Archduke or Emperor, Archduke cannot promote to Archduke or Emperor) ---> NEEDS TESTING
 
 Block protection
     Per player
     Zoning (WorldGuard like functionality)
 
 Temp/Kick/Ban/
-    Per player, per IP.
+    Per player, per IP. ---> NEEDS TESTING
 
 Bank system
     zones that act as banks. players can insert cash (unit not decided yet), into their virtual bank account.
@@ -27,7 +27,7 @@ Race system
 
 Transportation
     Minecart
-        secondary transportation method, constant speed
+        secondary transportation method, constant speed ---> NEEDS TESTING
 
     Boat
         act as warps. travel between every major city.

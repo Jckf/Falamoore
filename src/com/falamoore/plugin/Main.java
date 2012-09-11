@@ -1,17 +1,24 @@
 package com.falamoore.plugin;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.database.MySQL;
 
 public class Main extends JavaPlugin {
+    
+    public static HashMap<String, ArrayList<String>> playerrace = new HashMap<String, ArrayList<String>>();
+    public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
 
     static MySQL mysql;
     BanKick bankick;
+    PromoteDemote promdem;
 
     @Override
     public void onDisable() {
@@ -22,7 +29,8 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         createConfig();
         activateMySQL();
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new MinecartListener(), this);
         registerCommands();
         activateEffects();
     }
@@ -31,8 +39,8 @@ public class Main extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                for (final String s : PlayerListener.playerrace.keySet()) {
-                    for (final String player : PlayerListener.playerrace.get(s)) {
+                for (final String s : playerrace.keySet()) {
+                    for (final String player : playerrace.get(s)) {
                         if (s.equalsIgnoreCase("Elf")) {
                             getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 2));
                             getServer().getPlayer(player).addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 300, 2));
@@ -62,7 +70,7 @@ public class Main extends JavaPlugin {
                 getConfig().getString("database.password"));
         try {
             mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
-            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130), Rank VARCHAR(130))");
         } catch (final SQLException e) {
             e.printStackTrace();
         }
@@ -74,8 +82,14 @@ public class Main extends JavaPlugin {
 
     private void registerCommands() {
         bankick = new BanKick();
+        promdem = new PromoteDemote();
+        
         getCommand("ban").setExecutor(bankick);
+        getCommand("ipban").setExecutor(bankick);
+        getCommand("iptempban").setExecutor(bankick);
         getCommand("kick").setExecutor(bankick);
         getCommand("tempban").setExecutor(bankick);
+        getCommand("promote").setExecutor(promdem);
+        getCommand("demote").setExecutor(promdem);
     }
 }

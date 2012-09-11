@@ -16,6 +16,10 @@ public class BanKick implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
+            if (sender instanceof Player && getValue((Player)sender)<=1) {
+                sender.sendMessage("You dont have permission to do this");
+                return true;
+            }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 if (pl == null) {
@@ -40,6 +44,10 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("tempban")) {
+            if (sender instanceof Player && getValue((Player)sender)<=1) {
+                sender.sendMessage("You dont have permission to do this");
+                return true;
+            }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 final Calendar d = Calendar.getInstance();
@@ -84,12 +92,20 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("kick")) {
+            if (sender instanceof Player && getValue((Player)sender)<=1) {
+                sender.sendMessage("You dont have permission to do this");
+                return true;
+            }
             if (args.length >= 1) {
                 final Player pl = Bukkit.getPlayer(args[0]);
                 pl.kickPlayer("You are kicked!\nReason:" + giveReason(args));
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("IPBan")) {
+            if (sender instanceof Player && getValue((Player)sender)<=1) {
+                sender.sendMessage("You dont have permission to do this");
+                return true;
+            }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 if (pl == null) {
@@ -117,6 +133,10 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("iptempban")) {
+            if (sender instanceof Player && getValue((Player)sender)<=1) {
+                sender.sendMessage("You dont have permission to do this");
+                return true;
+            }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 final Calendar d = Calendar.getInstance();
@@ -144,6 +164,10 @@ public class BanKick implements CommandExecutor {
                     sender.sendMessage("Contact the plugin author!");
                     return true;
                 }
+                if (!pl.isOnline()) {
+                    sender.sendMessage("Player not online, Can't find IP!");
+                    return true;
+                }
                 final Player pl2 = (Player) pl;
                 if (isBanned(pl2.getAddress().getAddress().getHostAddress())) {
                     sender.sendMessage("This player is already banned!");
@@ -163,6 +187,10 @@ public class BanKick implements CommandExecutor {
         return false;
     }
 
+    private int getValue(Player sender) {
+        return Main.playerrank.get(sender.getName()).value;
+    }
+
     private String giveReason(String[] args) {
         final StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
@@ -180,8 +208,7 @@ public class BanKick implements CommandExecutor {
     }
 
     private boolean setBanned(String s, long date, String reason) {
-        Main.mysql.insert("bannedinfo", 
-           new String[] {
+        Main.mysql.insert("bannedinfo", new String[] {
                 "Name", "BanReson", "BannedTo"
         }, new Object[] {
                 s, reason, date

@@ -5,11 +5,12 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -17,15 +18,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.falamoore.plugin.PermissionManager.Rank;
+
 public class PlayerListener implements Listener {
 
-    public static HashMap<String, ArrayList<String>> playerrace = new HashMap<String, ArrayList<String>>();
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
-    Main main;
-
-    public PlayerListener(Main plugin) {
-        main = plugin;
-    }
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
@@ -50,10 +47,11 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
+        Main.playerrank.put(e.getPlayer().getName(), getRank(e.getPlayer()));
         final String race = getRace(e.getPlayer());
-        final ArrayList<String> newmap = playerrace.get(race);
+        final ArrayList<String> newmap = Main.playerrace.get(race);
         newmap.add(e.getPlayer().getName());
-        playerrace.put(race, newmap);
+        Main.playerrace.put(race, newmap);
         if (race.equalsIgnoreCase("Elf")) {
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 2));
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 300, 2));
@@ -67,20 +65,43 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         final String race = getRace(e.getPlayer());
-        final ArrayList<String> newmap = playerrace.get(race);
+        final ArrayList<String> newmap = Main.playerrace.get(race);
         newmap.remove(e.getPlayer().getName());
-        playerrace.put(race, newmap);
+        Main.playerrace.put(race, newmap);
         updateLastIP(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent e) {
+        final Rank rank = Main.playerrank.get(e.getPlayer().getName());
+        if (rank == Rank.USER) {
+            e.setFormat(e.getPlayer() + ": " + e.getMessage());
+        } else {
+            e.setFormat(rank.getColor() + "[" + rank.toString() + "] " + e.getPlayer().getName() + ": " +ChatColor.WHITE+ e.getMessage());
+        }
     }
 
     private void updateLastIP(Player p) {
         try {
-            Main.mysql.query("UPDATE playerinfo SET LastIP='"+p.getAddress().getAddress().getHostAddress()+"' WHERE Name='"+p.getName()+"'");
-        } catch (SQLException e) {
+            Main.mysql.query("UPDATE playerinfo SET LastIP='" + p.getAddress().getAddress().getHostAddress() + "' WHERE Name='" + p.getName() + "'");
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
     }
-    
+
+    private Rank getRank(Player s) {
+        try {
+            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
+            temp.first();
+            final String me = temp.getString("Rank");
+            temp.close();
+            return Rank.valueOf(me);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private String getRace(Player s) {
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
