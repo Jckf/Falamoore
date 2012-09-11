@@ -1,6 +1,7 @@
 package com.falamoore.plugin;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,13 +29,22 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
-        if (BanKick.isBanned(e.getPlayer())) {
-            if (BanKick.getExpirationDate(e.getPlayer()) <= System.currentTimeMillis()) {
-                BanKick.unban(e.getPlayer());
+        if (BanKick.isBanned(e.getPlayer().getName())) {
+            if (BanKick.getExpirationDate(e.getPlayer().getName()) <= System.currentTimeMillis()) {
+                BanKick.unban(e.getPlayer().getName());
                 e.allow();
             }
-            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer()));
+            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getName()));
             e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
+        } else if (BanKick.isBanned(e.getPlayer().getAddress().getAddress().getHostAddress())) {
+            if (BanKick.getExpirationDate(e.getPlayer().getAddress().getAddress().getHostAddress()) <= System.currentTimeMillis()) {
+                BanKick.unban(e.getPlayer().getAddress().getAddress().getHostAddress());
+                e.allow();
+            }
+            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getAddress().getHostAddress()));
+            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getAddress().getAddress().getHostAddress()) + "\nBanned untill: " + sdf.format(d));
+        } else {
+            e.allow();
         }
     }
 
@@ -60,8 +70,17 @@ public class PlayerListener implements Listener {
         final ArrayList<String> newmap = playerrace.get(race);
         newmap.remove(e.getPlayer().getName());
         playerrace.put(race, newmap);
+        updateLastIP(e.getPlayer());
     }
 
+    private void updateLastIP(Player p) {
+        try {
+            Main.mysql.query("UPDATE playerinfo SET LastIP='"+p.getAddress().getAddress().getHostAddress()+"' WHERE Name='"+p.getName()+"'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     private String getRace(Player s) {
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");

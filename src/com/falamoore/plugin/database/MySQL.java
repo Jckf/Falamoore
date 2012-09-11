@@ -52,15 +52,19 @@ public class MySQL {
         return this.connection != null;
     }
 
-    public boolean insert(String table, String[] column, String[] value) {
+    public boolean insert(String table, String[] column, Object[] value) {
         Statement statement = null;
         final StringBuilder sb1 = new StringBuilder();
         final StringBuilder sb2 = new StringBuilder();
         for (final String s : column) {
             sb1.append(s).append(",");
         }
-        for (final String s : value) {
-            sb2.append("'").append(s).append("',");
+        for (final Object s : value) {
+            if (s.toString().matches("0-9")) {
+                sb2.append(s.toString());
+            } else {
+                sb2.append("'").append(s.toString()).append("',");
+            }
         }
         final String columns = sb1.toString().substring(0, sb1.toString().length() - 1);
         final String values = sb2.toString().substring(0, sb2.toString().length() - 1);

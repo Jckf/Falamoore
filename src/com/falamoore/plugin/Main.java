@@ -61,7 +61,8 @@ public class Main extends JavaPlugin {
         mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"),
                 getConfig().getString("database.password"));
         try {
-            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Player VARCHAR(130), Banned BOOLEAN, BannedTo BIGINT, BanReason VARCHAR(130), Race VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130))");
         } catch (final SQLException e) {
             e.printStackTrace();
         }
