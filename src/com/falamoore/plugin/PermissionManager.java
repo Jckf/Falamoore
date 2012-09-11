@@ -11,7 +11,7 @@ public class PermissionManager {
     public enum Rank {
 
         TRAVELER(0), USER(1), JARL(2), ARCHDUKE(3), EMPEROR(4);
-        int value;
+        public int value;
 
         Rank(int i) {
             this.value = i;
@@ -75,6 +75,7 @@ public class PermissionManager {
     }
 
     public static void setNewRank(OfflinePlayer p, Rank r) {
+        if (Main.mysql == null) return;
         try {
             Main.mysql.query("UPDATE playerinfo SET Rank='" + r.toString() + "' WHERE Name='" + p.getName() + "'");
         } catch (SQLException e) {
@@ -83,6 +84,7 @@ public class PermissionManager {
     }
 
     public static Rank getRank(OfflinePlayer p) {
+        if (Main.mysql == null) return null;
         try {
             ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
             rs.next();

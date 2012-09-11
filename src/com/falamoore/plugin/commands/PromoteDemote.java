@@ -1,4 +1,4 @@
-package com.falamoore.plugin;
+package com.falamoore.plugin.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -7,6 +7,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.falamoore.plugin.Main;
+import com.falamoore.plugin.PermissionManager;
 import com.falamoore.plugin.PermissionManager.Rank;
 
 public class PromoteDemote implements CommandExecutor {

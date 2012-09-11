@@ -4,25 +4,34 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.falamoore.plugin.PermissionManager.Rank;
+import com.falamoore.plugin.commands.BanKick;
+import com.falamoore.plugin.commands.PromoteDemote;
 import com.falamoore.plugin.database.MySQL;
+import com.falamoore.plugin.listener.VehicleListener;
+import com.falamoore.plugin.listener.PlayerListener;
 
 public class Main extends JavaPlugin {
     
     public static HashMap<String, ArrayList<String>> playerrace = new HashMap<String, ArrayList<String>>();
     public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
+    public static HashMap<String, String> warps = new HashMap<String, String>();
 
-    static MySQL mysql;
+    public static MySQL mysql;
     BanKick bankick;
     PromoteDemote promdem;
+    public static ConversationFactory factory;
 
     @Override
     public void onDisable() {
-        mysql.close();
+        if (mysql.isConnected()){
+            mysql.close();
+        }
     }
 
     @Override
@@ -30,9 +39,17 @@ public class Main extends JavaPlugin {
         createConfig();
         activateMySQL();
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new MinecartListener(), this);
+        getServer().getPluginManager().registerEvents(new VehicleListener(), this);
+        activateConversations();
         registerCommands();
         activateEffects();
+    }
+
+    private void activateConversations() {
+        factory = new ConversationFactory(this);
+        warps.put("Redcrest", "world,0,0,0");
+        warps.put("Ermiron", "world,0,0,0");
+        warps.put("Karaz Ankor", "world,0,0,0");
     }
 
     private void activateEffects() {
@@ -65,7 +82,7 @@ public class Main extends JavaPlugin {
         saveConfig();
     }
 
-    private void activateMySQL() {
+    public void activateMySQL() {
         mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"),
                 getConfig().getString("database.password"));
         try {
@@ -86,7 +103,7 @@ public class Main extends JavaPlugin {
         
         getCommand("ban").setExecutor(bankick);
         getCommand("ipban").setExecutor(bankick);
-        getCommand("iptempban").setExecutor(bankick);
+        getCommand("tempipban").setExecutor(bankick);
         getCommand("kick").setExecutor(bankick);
         getCommand("tempban").setExecutor(bankick);
         getCommand("promote").setExecutor(promdem);

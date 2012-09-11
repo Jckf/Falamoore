@@ -1,4 +1,4 @@
-package com.falamoore.plugin;
+package com.falamoore.plugin.commands;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +10,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.falamoore.plugin.Main;
 
 public class BanKick implements CommandExecutor {
 
@@ -200,6 +202,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static void unban(String player) {
+        if (Main.mysql == null) return;
         try {
             Main.mysql.query("DELETE FROM bannedinfo WHERE Name='" + player + "'");
         } catch (final SQLException e) {
@@ -208,6 +211,7 @@ public class BanKick implements CommandExecutor {
     }
 
     private boolean setBanned(String s, long date, String reason) {
+        if (Main.mysql == null) return false;
         Main.mysql.insert("bannedinfo", new String[] {
                 "Name", "BanReson", "BannedTo"
         }, new Object[] {
@@ -217,6 +221,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static String getBanReason(String player) {
+        if (Main.mysql == null) return null;
         try {
             final ResultSet rs = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name='" + player + "'");
             rs.next();
@@ -230,6 +235,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static boolean isBanned(String pl) {
+        if (Main.mysql == null) return false;
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + pl + "'");
             temp.first();
@@ -243,6 +249,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static long getExpirationDate(String player) {
+        if (Main.mysql == null) return 0;
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + player + "'");
             temp.first();

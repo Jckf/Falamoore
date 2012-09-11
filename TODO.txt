@@ -30,4 +30,4 @@ Transportation
         secondary transportation method, constant speed ---> NEEDS TESTING
 
     Boat
-        act as warps. travel between every major city.
+        act as warps. travel between every major city. ---> NEEDS TESTING AND LOCATION OF WARPS
