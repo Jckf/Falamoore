@@ -28,20 +28,20 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void onPlayerEnterBoat(VehicleEnterEvent e) {
-        if (e.getEntered() instanceof Player && e.getVehicle() instanceof Boat) {
-            World w = e.getVehicle().getWorld();
-            int x = e.getVehicle().getLocation().getBlockX();
-            int y = e.getVehicle().getLocation().getBlockY();
-            int z = e.getVehicle().getLocation().getBlockZ();
-            for (String s : Main.warps.keySet()) {
-                String[] l = Main.warps.get(s).split(",");
-                World w2 = Bukkit.getWorld(l[0]);
-                int x2 = Integer.parseInt(l[1]);
-                int y2 = Integer.parseInt(l[2]);
-                int z2 = Integer.parseInt(l[3]);
-                System.out.print(w+"="+w2 +" " +x+"="+x2+" "+y+"="+y2+" "+z+"="+z2);
-                if (w == w2 && x == x2 && z == z2 && y >= y2) {
-                    Conversation conv = Main.factory.withFirstPrompt(new WarpPrompt()).withLocalEcho(false).buildConversation((Player) e.getEntered());
+        if ((e.getEntered() instanceof Player) && (e.getVehicle() instanceof Boat)) {
+            final World w = e.getVehicle().getWorld();
+            final int x = e.getVehicle().getLocation().getBlockX();
+            final int y = e.getVehicle().getLocation().getBlockY();
+            final int z = e.getVehicle().getLocation().getBlockZ();
+            for (final String s : Main.warps.keySet()) {
+                final String[] l = Main.warps.get(s).split(",");
+                final World w2 = Bukkit.getWorld(l[0]);
+                final int x2 = Integer.parseInt(l[1]);
+                final int y2 = Integer.parseInt(l[2]);
+                final int z2 = Integer.parseInt(l[3]);
+                System.out.print(w + "=" + w2 + " " + x + "=" + x2 + " " + y + "=" + y2 + " " + z + "=" + z2);
+                if ((w == w2) && (x == x2) && (z == z2) && (y >= y2)) {
+                    final Conversation conv = Main.factory.withFirstPrompt(new WarpPrompt()).withLocalEcho(false).buildConversation((Player) e.getEntered());
                     conv.begin();
                 }
             }

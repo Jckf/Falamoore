@@ -15,7 +15,7 @@ public class WarpPrompt extends ValidatingPrompt {
     public String getPromptText(ConversationContext arg0) {
         return "Select destination: Redcrest, Ermiron, Karaz Ankor";
     }
-    
+
     @Override
     public boolean blocksForInput(ConversationContext context) {
         return true;
@@ -23,9 +23,9 @@ public class WarpPrompt extends ValidatingPrompt {
 
     @Override
     protected Prompt acceptValidatedInput(ConversationContext cc, String in) {
-        Player tpme = ((Player) cc.getForWhom());
-        String[] l = Main.warps.get(in).split(",");
-        Location loc = new Location(Bukkit.getWorld(l[0]), 25, 100, 25);
+        final Player tpme = ((Player) cc.getForWhom());
+        final String[] l = Main.warps.get(in).split(",");
+        final Location loc = new Location(Bukkit.getWorld(l[0]), 25, 100, 25);
         tpme.teleport(loc);
         tpme.sendMessage("You traveled to " + in);
         return END_OF_CONVERSATION;
@@ -36,7 +36,7 @@ public class WarpPrompt extends ValidatingPrompt {
         if (in.equalsIgnoreCase("Redcrest") || in.equalsIgnoreCase("Ermiron") || in.equalsIgnoreCase("Karaz Ankor")) { return true; }
         return false;
     }
-    
+
     @Override
     protected String getFailedValidationText(ConversationContext context, String invalidInput) {
         return "You entered a invalid option!";

@@ -18,7 +18,7 @@ public class BanKick implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
-            if (sender instanceof Player && getValue((Player)sender)<=1) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -46,7 +46,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("tempban")) {
-            if (sender instanceof Player && getValue((Player)sender)<=1) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -94,7 +94,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("kick")) {
-            if (sender instanceof Player && getValue((Player)sender)<=1) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -104,7 +104,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("IPBan")) {
-            if (sender instanceof Player && getValue((Player)sender)<=1) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -135,7 +135,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("iptempban")) {
-            if (sender instanceof Player && getValue((Player)sender)<=1) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -202,7 +202,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static void unban(String player) {
-        if (Main.mysql == null) return;
+        if (Main.mysql == null) { return; }
         try {
             Main.mysql.query("DELETE FROM bannedinfo WHERE Name='" + player + "'");
         } catch (final SQLException e) {
@@ -211,7 +211,7 @@ public class BanKick implements CommandExecutor {
     }
 
     private boolean setBanned(String s, long date, String reason) {
-        if (Main.mysql == null) return false;
+        if (Main.mysql == null) { return false; }
         Main.mysql.insert("bannedinfo", new String[] {
                 "Name", "BanReson", "BannedTo"
         }, new Object[] {
@@ -221,13 +221,16 @@ public class BanKick implements CommandExecutor {
     }
 
     public static String getBanReason(String player) {
-        if (Main.mysql == null) return null;
+        if (Main.mysql == null) { return null; }
         try {
             final ResultSet rs = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name='" + player + "'");
-            rs.next();
-            final String reason = rs.getString("BanReason");
+            if (rs.next()) {
+                final String reason = rs.getString("BanReason");
+                rs.close();
+                return reason;
+            }
             rs.close();
-            return reason;
+            return null;
         } catch (final SQLException e) {
             e.printStackTrace();
             return null;
@@ -235,13 +238,15 @@ public class BanKick implements CommandExecutor {
     }
 
     public static boolean isBanned(String pl) {
-        if (Main.mysql == null) return false;
+        if (Main.mysql == null) { return false; }
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + pl + "'");
-            temp.first();
-            final boolean me = temp.getBoolean("Banned");
+            if (temp.first()) {
+                temp.close();
+                return true;
+            }
             temp.close();
-            return me;
+            return false;
         } catch (final Exception e) {
             e.printStackTrace();
         }
@@ -249,16 +254,19 @@ public class BanKick implements CommandExecutor {
     }
 
     public static long getExpirationDate(String player) {
-        if (Main.mysql == null) return 0;
+        if (Main.mysql == null) { return Long.MAX_VALUE; }
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + player + "'");
-            temp.first();
-            final long me = temp.getLong("BannedTo");
+            if (temp.first()) {
+                final long me = temp.getLong("BannedTo");
+                temp.close();
+                return me;
+            }
             temp.close();
-            return me;
+            return Long.MAX_VALUE;
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return Long.MAX_VALUE;
     }
 }

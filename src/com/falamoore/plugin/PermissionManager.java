@@ -16,9 +16,9 @@ public class PermissionManager {
         Rank(int i) {
             this.value = i;
         }
-        
+
         public Rank getHigherRank() {
-            switch(this) {
+            switch (this) {
                 case ARCHDUKE:
                     return EMPEROR;
                 case EMPEROR:
@@ -33,9 +33,9 @@ public class PermissionManager {
                     return USER;
             }
         }
-        
+
         public Rank getLowerRank() {
-            switch(this) {
+            switch (this) {
                 case ARCHDUKE:
                     return JARL;
                 case EMPEROR:
@@ -75,23 +75,23 @@ public class PermissionManager {
     }
 
     public static void setNewRank(OfflinePlayer p, Rank r) {
-        if (Main.mysql == null) return;
+        if (Main.mysql == null) { return; }
         try {
             Main.mysql.query("UPDATE playerinfo SET Rank='" + r.toString() + "' WHERE Name='" + p.getName() + "'");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static Rank getRank(OfflinePlayer p) {
-        if (Main.mysql == null) return null;
+        if (Main.mysql == null) { return null; }
         try {
-            ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
+            final ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
             rs.next();
-            String s = rs.getString("Rank");
+            final String s = rs.getString("Rank");
             rs.close();
             return Rank.valueOf(s);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }

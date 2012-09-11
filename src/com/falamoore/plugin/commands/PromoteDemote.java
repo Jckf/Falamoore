@@ -17,25 +17,25 @@ public class PromoteDemote implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("promote")) {
             if (args.length == 1) {
-                OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
-                Rank r = PermissionManager.getRank(p);
-                if (sender instanceof Player && Main.playerrank.get(((Player)sender).getName()).value<=r.value) {
+                final OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
+                final Rank r = PermissionManager.getRank(p);
+                if ((sender instanceof Player) && (Main.playerrank.get(((Player) sender).getName()).value <= r.value)) {
                     sender.sendMessage("You cant promote to a rank equal or above your own!");
                     return true;
                 }
                 PermissionManager.setNewRank(p, r.getHigherRank());
-                sender.sendMessage("You promoted "+p.getName()+" to "+ PermissionManager.getRank(p).toString());
+                sender.sendMessage("You promoted " + p.getName() + " to " + PermissionManager.getRank(p).toString());
             }
         } else if (cmd.getName().equalsIgnoreCase("demote")) {
             if (args.length == 1) {
-                OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
-                Rank r = PermissionManager.getRank(p);
-                if (sender instanceof Player && Main.playerrank.get(((Player)sender).getName()).value<=r.value) {
+                final OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
+                final Rank r = PermissionManager.getRank(p);
+                if ((sender instanceof Player) && (Main.playerrank.get(((Player) sender).getName()).value <= r.value)) {
                     sender.sendMessage("You cant demote to a rank equal or above your own!");
                     return true;
                 }
                 PermissionManager.setNewRank(p, r.getLowerRank());
-                sender.sendMessage("You demoted "+p.getName()+" to "+r.toString());
+                sender.sendMessage("You demoted " + p.getName() + " to " + r.toString());
             }
         }
         return false;

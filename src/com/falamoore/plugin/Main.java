@@ -13,11 +13,11 @@ import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
 import com.falamoore.plugin.commands.PromoteDemote;
 import com.falamoore.plugin.database.MySQL;
-import com.falamoore.plugin.listener.VehicleListener;
 import com.falamoore.plugin.listener.PlayerListener;
+import com.falamoore.plugin.listener.VehicleListener;
 
 public class Main extends JavaPlugin {
-    
+
     public static HashMap<String, ArrayList<String>> playerrace = new HashMap<String, ArrayList<String>>();
     public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
     public static HashMap<String, String> warps = new HashMap<String, String>();
@@ -29,7 +29,7 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (mysql.isConnected()){
+        if (mysql.isConnected()) {
             mysql.close();
         }
     }
@@ -100,7 +100,7 @@ public class Main extends JavaPlugin {
     private void registerCommands() {
         bankick = new BanKick();
         promdem = new PromoteDemote();
-        
+
         getCommand("ban").setExecutor(bankick);
         getCommand("ipban").setExecutor(bankick);
         getCommand("tempipban").setExecutor(bankick);

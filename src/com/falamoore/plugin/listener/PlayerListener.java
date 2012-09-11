@@ -13,8 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -26,7 +26,7 @@ import com.falamoore.plugin.commands.BanKick;
 public class PlayerListener implements Listener {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
-    
+
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         if (e.getPlayer().isConversing()) {
@@ -92,7 +92,7 @@ public class PlayerListener implements Listener {
     }
 
     private void updateLastIP(Player p) {
-        if (Main.mysql == null) return;
+        if (Main.mysql == null) { return; }
         try {
             Main.mysql.query("UPDATE playerinfo SET LastIP='" + p.getAddress().getAddress().getHostAddress() + "' WHERE Name='" + p.getName() + "'");
         } catch (final SQLException e) {
@@ -101,7 +101,7 @@ public class PlayerListener implements Listener {
     }
 
     private Rank getRank(Player s) {
-        if (Main.mysql == null) return null;
+        if (Main.mysql == null) { return null; }
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
             temp.first();
@@ -115,7 +115,7 @@ public class PlayerListener implements Listener {
     }
 
     private String getRace(Player s) {
-        if (Main.mysql == null) return null;
+        if (Main.mysql == null) { return null; }
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
             temp.first();
