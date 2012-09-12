@@ -24,6 +24,10 @@ Race system
 
     Humans
         gain additional 5% when trading
+        
+Maintnance mode ---> NEEDS TESTING
+
+Enviromental controll ---> NEEDS TESTING
 
 Transportation
     Minecart

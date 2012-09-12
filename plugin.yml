@@ -16,4 +16,8 @@ commands:
     promote:
         usage: /<command>
     demote:
+        usage: /<command>
+    maintenance:
+        usage: /<command>
+    env:
         usage: /<command>    

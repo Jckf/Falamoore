@@ -238,7 +238,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static boolean isBanned(String pl) {
-        if (Main.mysql == null) { return false; }
+        if (!Main.mysql.isConnected()) { return false; }
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + pl + "'");
             if (temp.first()) {
