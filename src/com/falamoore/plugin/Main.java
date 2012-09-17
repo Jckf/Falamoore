@@ -52,15 +52,15 @@ public class Main extends JavaPlugin {
         activateEffects();
         // /////////////////////DEBUG////////////////////
         playerrank.put("stelar7", Rank.valueOf("TRAVELER"));
-        playerrace.put("stelar7", "dwarf");
+        playerrace.put("stelar7", "elf");
         // /////////////////////DEBUG////////////////////
     }
 
     private void activateConversations() {
         factory = new ConversationFactory(this);
-        warps.put("Redcrest", "world,0,0,0");
-        warps.put("Ermiron", "world,0,0,0");
-        warps.put("Karaz Ankor", "world,0,0,0");
+        warps.put("Redcrest", "world,-3,-3,-3|3,3,3");
+        warps.put("Ermiron", "world,4,4,4|10,10,10");
+        warps.put("Karaz Ankor", "world,11,11,11|17,17,17");
     }
 
     private void activateEffects() {
@@ -96,8 +96,10 @@ public class Main extends JavaPlugin {
     }
 
     public void activateMySQL() {
+
         mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"),
                 getConfig().getString("database.password"));
+
         mysql.open();
         try {
             if ((mysql == null) || !mysql.isConnected()) {
