@@ -7,6 +7,7 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -50,7 +51,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (e.getPlayer().isConversing()) {
+        if (e.getPlayer().isConversing() && e.getPlayer().isInsideVehicle() && e.getPlayer().getVehicle() instanceof Boat) {
             e.setCancelled(true);
         }
     }
@@ -71,13 +72,13 @@ public class PlayerListener implements Listener {
             }
             final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getName()));
             e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
-        } else if (BanKick.isBanned(e.getPlayer().getAddress().getAddress().getHostAddress())) {
-            if (BanKick.getExpirationDate(e.getPlayer().getAddress().getAddress().getHostAddress()) <= System.currentTimeMillis()) {
-                BanKick.unban(e.getPlayer().getAddress().getAddress().getHostAddress());
+        } else if (BanKick.isBanned(e.getPlayer().getAddress().getHostString())) {
+            if (BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()) <= System.currentTimeMillis()) {
+                BanKick.unban(e.getPlayer().getAddress().getHostString());
                 e.allow();
             }
-            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getAddress().getHostAddress()));
-            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getAddress().getAddress().getHostAddress()) + "\nBanned untill: " + sdf.format(d));
+            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()));
+            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getAddress().getHostString()) + "\nBanned untill: " + sdf.format(d));
         } else {
             e.allow();
         }

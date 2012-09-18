@@ -1,5 +1,7 @@
 package com.falamoore.plugin.listener;
 
+import javax.swing.JOptionPane;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,7 +31,7 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void boatMoveEvent(VehicleMoveEvent e) {
-        if (e.getVehicle() instanceof Boat) {
+        if (e.getVehicle() instanceof Boat && e.getVehicle().getPassenger() instanceof Player) {
             if (isInsideTPArea(e.getTo())) {
                 e.getVehicle().setVelocity(e.getVehicle().getVelocity().zero());
             }

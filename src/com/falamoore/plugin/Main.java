@@ -58,9 +58,9 @@ public class Main extends JavaPlugin {
 
     private void activateConversations() {
         factory = new ConversationFactory(this);
-        warps.put("Redcrest", "world,-3,-3,-3|3,3,3");
-        warps.put("Ermiron", "world,4,4,4|10,10,10");
-        warps.put("Karaz Ankor", "world,11,11,11|17,17,17");
+        warps.put("Redcrest", "world, -3, -3, -3 | 3, 3, 3");
+        warps.put("Ermiron", "world, 4, 4, 4 | 10, 10, 10");
+        warps.put("Karaz Ankor", "world, 11, 11, 11 | 17, 17, 17");
     }
 
     private void activateEffects() {
@@ -88,9 +88,9 @@ public class Main extends JavaPlugin {
     private void createConfig() {
         getConfig().addDefault("database.host", "IP HERE");
         getConfig().addDefault("database.port", "PORT HERE");
-        getConfig().getString("database.database", "DATABASE HERE");
-        getConfig().getString("database.username", "USERNAME HERE");
-        getConfig().getString("database.password", "PASSWORD HERE");
+        getConfig().addDefault("database.database", "DATABASE HERE");
+        getConfig().addDefault("database.username", "USERNAME HERE");
+        getConfig().addDefault("database.password", "PASSWORD HERE");
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
