@@ -16,7 +16,10 @@ public class EnviromentalControll implements CommandExecutor {
             return true;
         }
         final Player p = (Player) sender;
-        if (PermissionManager.getRank(p).value >= PermissionManager.Rank.JARL.value) {
+        if (getValue(p) <= 1) {
+            sender.sendMessage("You dont have permission to do this");
+            return true;
+        }
             if (args.length > 1) {
                 if (args[0].equalsIgnoreCase("time")) {
                     if (args[1].equalsIgnoreCase("day")) {
@@ -61,10 +64,9 @@ public class EnviromentalControll implements CommandExecutor {
                     return true;
                 }
             }
-        } else {
-            sender.sendMessage("You dont have permission to do this!");
-            return true;
-        }
         return false;
     }
+private int getValue(Player sender) {
+    return PermissionManager.getRank(sender).value;
+}
 }

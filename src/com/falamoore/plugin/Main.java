@@ -12,7 +12,9 @@ import com.falamoore.plugin.commands.BanKick;
 import com.falamoore.plugin.commands.EnviromentalControll;
 import com.falamoore.plugin.commands.Maintenance;
 import com.falamoore.plugin.commands.PromoteDemote;
+import com.falamoore.plugin.commands.StabSamtale;
 import com.falamoore.plugin.database.MySQL;
+import com.falamoore.plugin.listener.BlockListener;
 import com.falamoore.plugin.listener.PlayerListener;
 import com.falamoore.plugin.listener.VehicleListener;
 import com.falamoore.plugin.runnables.PotionEffects;
@@ -27,6 +29,7 @@ public class Main extends JavaPlugin {
     BanKick bankick;
     PromoteDemote promdem;
     Maintenance maintenance;
+    StabSamtale ss;
     EnviromentalControll envc;
     public static ConversationFactory factory;
     public static boolean maintnance = false;
@@ -45,11 +48,16 @@ public class Main extends JavaPlugin {
         plugin = this;
         createConfig();
         activateMySQL();
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new VehicleListener(), this);
+        registerListeners();
         activateConversations();
         registerCommands();
         activateEffects();
+    }
+    
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new VehicleListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(), this);
     }
 
     private void activateConversations() {
@@ -99,6 +107,7 @@ public class Main extends JavaPlugin {
         promdem = new PromoteDemote();
         maintenance = new Maintenance();
         envc = new EnviromentalControll();
+        ss = new StabSamtale();
 
         getCommand("ban").setExecutor(bankick);
         getCommand("ipban").setExecutor(bankick);
@@ -109,5 +118,6 @@ public class Main extends JavaPlugin {
         getCommand("demote").setExecutor(promdem);
         getCommand("maintenance").setExecutor(maintenance);
         getCommand("env").setExecutor(envc);
+        getCommand("ss").setExecutor(ss);
     }
 }

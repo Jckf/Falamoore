@@ -13,8 +13,8 @@ public class PermissionManager {
 
         TRAVELER(0),
         USER(1),
-        JARL(2),
-        ARCHDUKE(3),
+        GUIDE(2),
+        JARL(3),
         EMPEROR(4);
         public int value;
 
@@ -24,16 +24,16 @@ public class PermissionManager {
 
         public Rank getHigherRank() {
             switch (this) {
-                case ARCHDUKE:
-                    return EMPEROR;
+                case GUIDE:
+                    return JARL;
                 case EMPEROR:
                     return EMPEROR;
                 case JARL:
-                    return ARCHDUKE;
+                    return EMPEROR;
                 case TRAVELER:
                     return USER;
                 case USER:
-                    return JARL;
+                    return GUIDE;
                 default:
                     return USER;
             }
@@ -41,12 +41,12 @@ public class PermissionManager {
 
         public Rank getLowerRank() {
             switch (this) {
-                case ARCHDUKE:
-                    return JARL;
+                case GUIDE:
+                    return EMPEROR;
                 case EMPEROR:
-                    return ARCHDUKE;
+                    return JARL;
                 case JARL:
-                    return USER;
+                    return GUIDE;
                 case TRAVELER:
                     return TRAVELER;
                 case USER:
@@ -58,7 +58,7 @@ public class PermissionManager {
 
         public ChatColor getColor() {
             switch (this) {
-                case ARCHDUKE:
+                case GUIDE:
                     return ChatColor.DARK_AQUA;
                 case EMPEROR:
                     return ChatColor.GREEN;

@@ -7,15 +7,21 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -29,6 +35,48 @@ import com.falamoore.plugin.runnables.PotionEffects;
 public class PlayerListener implements Listener {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
+
+    @EventHandler
+    public void itemPickup(PlayerPickupItemEvent e) {
+        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void Place(BlockPlaceEvent e) {
+        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void bucket(PlayerBucketEmptyEvent e) {
+        if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.USER.value) {
+            if (e.getItemStack().getType() == Material.LAVA_BUCKET) {
+                e.setCancelled(true);
+            }
+            if (e.getItemStack().getType() == Material.WATER_BUCKET) {
+                e.setCancelled(true);
+            }
+        }
+    }
+    
+    @EventHandler
+    public void ignite(BlockIgniteEvent e) {
+        if (e.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL) {
+            if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.USER.value) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void Brake(BlockBreakEvent e) {
+        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+            e.setCancelled(true);
+        }
+    }
 
     @EventHandler
     public void onPlayerRespawn(final PlayerRespawnEvent e) {

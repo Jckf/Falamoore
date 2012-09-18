@@ -1,37 +1,11 @@
-Group system
-    The following ranks are planned: [Traveler], no-rank, [Jarl], [Archduke] and [Emperor] ---> NEEDS TESTING
-    Their respective permissions will be decided at a later point
-    
-Promote/Demote
-    only ranks above User can promote(Jarl, Archduke, Emperor), the new rank must be less than your level (Jarl cannot promote to Jarl, Archduke or Emperor, Archduke cannot promote to Archduke or Emperor) ---> NEEDS TESTING
+Change to a better permission system!
 
-Block protection
-    Per player
-    Zoning (WorldGuard like functionality)
+Add TPTO command (guide+)
+add TP command(JARL+)
+add homes(JARL+)
+add TPH (JARL+)
+add warp (JARL+)
+remove /stop (JARL-)
+remove /restart(JARL-)
 
-Temp/Kick/Ban/
-    Per player, per IP. ---> NEEDS TESTING
-
-Bank system
-    zones that act as banks. players can insert cash (unit not decided yet), into their virtual bank account.
-
-Race system
-    Elves
-        faster (swiftness II?), jump higher (2x?), 1/4? fall damage, mine 10% slower ---> NEEDS TESTING
-
-    Dwarves
-        100% faster mining, walks 20% slower than normal. ---> NEEDS TESTING
-
-    Humans
-        gain additional 5% when trading
-        
-Maintnance mode ---> NEEDS TESTING
-
-Enviromental controll ---> NEEDS TESTING
-
-Transportation
-    Minecart
-        secondary transportation method, constant speed ---> NEEDS TESTING
-
-    Boat
-        act as warps. travel between every major city. ---> NEEDS TESTING AND LOCATION OF WARPS
+improve performance

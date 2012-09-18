@@ -14,6 +14,10 @@ public class PromoteDemote implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (sender instanceof Player && getValue((Player)sender) <= 1) {
+            sender.sendMessage("You dont have permission to do this");
+            return true;
+        }
         if (cmd.getName().equalsIgnoreCase("promote")) {
             if (args.length == 1) {
                 final OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
@@ -38,5 +42,8 @@ public class PromoteDemote implements CommandExecutor {
             }
         }
         return false;
+    }
+    private int getValue(Player sender) {
+        return PermissionManager.getRank(sender).value;
     }
 }

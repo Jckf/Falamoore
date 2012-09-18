@@ -19,7 +19,7 @@ public class BanKick implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -105,7 +105,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("IPBan")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
@@ -136,7 +136,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("iptempban")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
+            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
                 sender.sendMessage("You dont have permission to do this");
                 return true;
             }
