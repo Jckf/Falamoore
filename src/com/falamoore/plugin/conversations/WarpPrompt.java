@@ -6,7 +6,7 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 
-import com.falamoore.plugin.Main;
+import com.falamoore.plugin.serializable.SerialWarp;
 
 public class WarpPrompt extends ValidatingPrompt {
 
@@ -23,7 +23,7 @@ public class WarpPrompt extends ValidatingPrompt {
     @Override
     protected Prompt acceptValidatedInput(ConversationContext cc, String in) {
         final Player tpme = ((Player) cc.getForWhom());
-        Location loc = Main.warps.get(in).getCenterLocation();
+        final Location loc = SerialWarp.getLocation(in);
         tpme.teleport(loc);
         tpme.sendMessage("You traveled to " + in);
         return END_OF_CONVERSATION;

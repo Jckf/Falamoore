@@ -38,7 +38,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (e.getPlayer().isConversing() && e.getPlayer().isInsideVehicle() && e.getPlayer().getVehicle() instanceof Boat) {
+        if (e.getPlayer().isConversing() && e.getPlayer().isInsideVehicle() && (e.getPlayer().getVehicle() instanceof Boat)) {
             e.setCancelled(true);
         }
     }

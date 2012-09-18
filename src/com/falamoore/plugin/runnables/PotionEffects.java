@@ -8,15 +8,15 @@ import org.bukkit.potion.PotionEffectType;
 import com.falamoore.plugin.Main;
 
 public class PotionEffects implements Runnable {
-    
+
     final Player player;
 
     public PotionEffects(Player player) {
         this.player = player;
     }
+
     public PotionEffects() {
         player = null;
-        
     }
 
     @Override

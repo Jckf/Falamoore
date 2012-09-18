@@ -1,6 +1,7 @@
 package com.falamoore.plugin;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.conversations.ConversationFactory;
@@ -15,13 +16,13 @@ import com.falamoore.plugin.database.MySQL;
 import com.falamoore.plugin.listener.PlayerListener;
 import com.falamoore.plugin.listener.VehicleListener;
 import com.falamoore.plugin.runnables.PotionEffects;
-import com.falamoore.plugin.serializable.SerialCuboid;
+import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class Main extends JavaPlugin {
 
     public static HashMap<String, String> playerrace = new HashMap<String, String>();
     public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
-    public static HashMap<String, SerialCuboid> warps = new HashMap<String, SerialCuboid>();
+    public static ArrayList<WarpCuboid> warps = new ArrayList<WarpCuboid>();
 
     public static MySQL mysql;
     BanKick bankick;
@@ -56,10 +57,14 @@ public class Main extends JavaPlugin {
     }
 
     private void activateConversations() {
+        /////////////////////////
+        //WARP LOCATIONS NEEDED//
+        //CLICK BOAT IN HERE:
+        //warps.add(new WarpCuboid("world", xmin,ymin,zmin,xmax,ymax,zmax));
+        //SELECT LOCATION FROM HERE:
+        //SerialWarp.add("Redcrest", new Location(Bukkit.getWorld("world"), 0,0,0));
+        /////////////////////////
         factory = new ConversationFactory(this);
-        warps.put("Redcrest", new SerialCuboid("world", -3, -3, -3, 3, 3, 3));
-        warps.put("Ermiron", new SerialCuboid("world", 4, 4, 4, 10, 10, 10));
-        warps.put("Karaz Ankor", new SerialCuboid("world", 11, 11, 11, 17, 17, 17));
     }
 
     private void activateEffects() {

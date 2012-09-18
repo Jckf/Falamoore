@@ -9,12 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.util.Vector;
 
 import com.falamoore.plugin.Main;
 import com.falamoore.plugin.conversations.WarpPrompt;
-import com.falamoore.plugin.serializable.SerialCuboid;
+import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class VehicleListener implements Listener {
+    
+    Vector v = new Vector(0,0,0);
 
     @EventHandler
     public void minecartMoveEvent(VehicleMoveEvent e) {
@@ -28,15 +31,15 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void boatMoveEvent(VehicleMoveEvent e) {
-        if (e.getVehicle() instanceof Boat && e.getVehicle().getPassenger() instanceof Player) {
+        if ((e.getVehicle() instanceof Boat) && (e.getVehicle().getPassenger() instanceof Player)) {
             if (isInsideTPArea(e.getVehicle())) {
-                e.getVehicle().setVelocity(e.getVehicle().getVelocity().zero());
+                e.getVehicle().setVelocity(v);
             }
         }
     }
 
     private boolean isInsideTPArea(Entity e) {
-        for (SerialCuboid s : Main.warps.values()) {
+        for (WarpCuboid s : Main.warps) {
             if (s.isInside(e)) { return true; }
         }
         return false;
