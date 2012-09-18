@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.falamoore.plugin.Main;
+import com.falamoore.plugin.PermissionManager;
 
 public class BanKick implements CommandExecutor {
 
@@ -190,7 +191,7 @@ public class BanKick implements CommandExecutor {
     }
 
     private int getValue(Player sender) {
-        return Main.playerrank.get(sender.getName()).value;
+        return PermissionManager.getRank(sender).value;
     }
 
     private String giveReason(String[] args) {

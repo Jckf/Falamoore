@@ -16,8 +16,8 @@ import com.falamoore.plugin.conversations.WarpPrompt;
 import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class VehicleListener implements Listener {
-    
-    Vector v = new Vector(0,0,0);
+
+    Vector v = new Vector(0, 0, 0);
 
     @EventHandler
     public void minecartMoveEvent(VehicleMoveEvent e) {
@@ -39,7 +39,7 @@ public class VehicleListener implements Listener {
     }
 
     private boolean isInsideTPArea(Entity e) {
-        for (WarpCuboid s : Main.warps) {
+        for (final WarpCuboid s : Main.warps) {
             if (s.isInside(e)) { return true; }
         }
         return false;

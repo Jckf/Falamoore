@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Boat;
+import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,13 +18,12 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.falamoore.plugin.Main;
 import com.falamoore.plugin.PermissionManager;
 import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
+import com.falamoore.plugin.conversations.RacePrompt;
 import com.falamoore.plugin.runnables.PotionEffects;
 
 public class PlayerListener implements Listener {
@@ -38,8 +37,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (e.getPlayer().isConversing() && e.getPlayer().isInsideVehicle() && (e.getPlayer().getVehicle() instanceof Boat)) {
-            e.setCancelled(true);
+        if (e.getPlayer().isConversing()) {
+            if (e.getTo().getBlock() != e.getFrom().getBlock()) {
+                e.setCancelled(e.getPlayer().isConversing());
+            }
         }
     }
 
@@ -59,44 +60,45 @@ public class PlayerListener implements Listener {
             }
             final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getName()));
             e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
-        } else if (BanKick.isBanned(e.getPlayer().getAddress().getHostString())) {
-            if (BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()) <= System.currentTimeMillis()) {
-                BanKick.unban(e.getPlayer().getAddress().getHostString());
-                e.allow();
-            }
-            final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()));
-            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getAddress().getHostString()) + "\nBanned untill: " + sdf.format(d));
+            // } else if
+            // (BanKick.isBanned(e.getPlayer().getAddress().getHostString())) {
+            // if
+            // (BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString())
+            // <= System.currentTimeMillis()) {
+            // BanKick.unban(e.getPlayer().getAddress().getHostString());
+            // e.allow();
+            // }
+            // final Date d = new
+            // Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()));
+            // e.disallow(Result.KICK_BANNED,
+            // BanKick.getBanReason(e.getPlayer().getAddress().getHostString())
+            // + "\nBanned untill: " + sdf.format(d));
         } else {
             e.allow();
         }
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        if (!Main.mysql.isConnected()) { return; }
-        Main.playerrank.put(e.getPlayer().getName(), getRank(e.getPlayer()));
-        final String race = getRace(e.getPlayer());
-        Main.playerrace.put(e.getPlayer().getName(), getRace(e.getPlayer()));
-        if (race.equalsIgnoreCase("Elf")) {
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1400, 2));
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1400, 2));
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1400, 1));
-        } else if (race.equalsIgnoreCase("Dwarf")) {
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1400, 2));
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1400, 2));
+    public void onPlayerJoin(final PlayerJoinEvent e) {
+        if (!dbContains(e.getPlayer())) {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
+                @Override
+                public void run() {
+                    final Conversation c = Main.factory.withFirstPrompt(new RacePrompt()).withLocalEcho(false).buildConversation(e.getPlayer());
+                    c.begin();
+                }
+            });
         }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
-        if (!Main.mysql.isConnected()) { return; }
-
         updateLastIP(e.getPlayer());
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
-        final Rank rank = Main.playerrank.get(e.getPlayer().getName());
+        final Rank rank = PermissionManager.getRank(e.getPlayer());
         if (rank == Rank.USER) {
             e.setFormat(e.getPlayer() + ": " + e.getMessage());
         } else {
@@ -105,7 +107,6 @@ public class PlayerListener implements Listener {
     }
 
     private void updateLastIP(Player p) {
-        if (Main.mysql == null) { return; }
         try {
             Main.mysql.query("UPDATE playerinfo SET LastIP='" + p.getAddress().getAddress().getHostAddress() + "' WHERE Name='" + p.getName() + "'");
         } catch (final SQLException e) {
@@ -113,31 +114,15 @@ public class PlayerListener implements Listener {
         }
     }
 
-    private Rank getRank(Player s) {
-        if (Main.playerrank.containsKey(s.getName())) { return Main.playerrank.get(s.getName()); }
+    private boolean dbContains(Player p) {
         try {
-            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
-            temp.first();
-            final String me = temp.getString("Rank");
-            temp.close();
-            return Rank.valueOf(me);
+            final ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
+            final boolean ct = rs.next();
+            rs.close();
+            return ct;
         } catch (final Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return null;
-    }
-
-    private String getRace(Player s) {
-        if (Main.playerrace.containsKey(s.getName())) { return Main.playerrace.get(s.getName()); }
-        try {
-            final ResultSet temp = Main.mysql.query("SELECT * FROM playerinfo WHERE Player = '" + s.getName() + "'");
-            temp.first();
-            final String me = temp.getString("Race");
-            temp.close();
-            return me;
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

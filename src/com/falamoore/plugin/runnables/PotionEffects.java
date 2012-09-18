@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import com.falamoore.plugin.Main;
+import com.falamoore.plugin.PermissionManager;
 
 public class PotionEffects implements Runnable {
 
@@ -22,26 +22,22 @@ public class PotionEffects implements Runnable {
     @Override
     public void run() {
         if (player != null) {
-            if (Main.playerrace.get(player.getName()).equalsIgnoreCase("Elf")) {
+            if (PermissionManager.getRace(player).equalsIgnoreCase("Elf")) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1400, 2));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1400, 2));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1400, 1));
-            } else if (Main.playerrace.get(player.getName()).equalsIgnoreCase("Dwarf")) {
+            } else if (PermissionManager.getRace(player).equalsIgnoreCase("Dwarf")) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1400, 2));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1400, 2));
             }
             return;
         }
-        for (final String s : Main.playerrace.keySet()) {
-            final Player p = Bukkit.getServer().getPlayer(s);
-            if (p == null) {
-                continue;
-            }
-            if (Main.playerrace.get(s).equalsIgnoreCase("Elf")) {
+        for (final Player p : Bukkit.getServer().getOnlinePlayers()) {
+            if (PermissionManager.getRace(p).equalsIgnoreCase("Elf")) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1400, 2));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1400, 2));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1400, 1));
-            } else if (Main.playerrace.get(s).equalsIgnoreCase("Dwarf")) {
+            } else if (PermissionManager.getRace(p).equalsIgnoreCase("Dwarf")) {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1400, 2));
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1400, 2));
             }

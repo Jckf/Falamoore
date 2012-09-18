@@ -2,12 +2,12 @@ package com.falamoore.plugin;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
 import com.falamoore.plugin.commands.EnviromentalControll;
 import com.falamoore.plugin.commands.Maintenance;
@@ -16,12 +16,11 @@ import com.falamoore.plugin.database.MySQL;
 import com.falamoore.plugin.listener.PlayerListener;
 import com.falamoore.plugin.listener.VehicleListener;
 import com.falamoore.plugin.runnables.PotionEffects;
+import com.falamoore.plugin.serializable.SerialWarp;
 import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class Main extends JavaPlugin {
 
-    public static HashMap<String, String> playerrace = new HashMap<String, String>();
-    public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
     public static ArrayList<WarpCuboid> warps = new ArrayList<WarpCuboid>();
 
     public static MySQL mysql;
@@ -38,6 +37,7 @@ public class Main extends JavaPlugin {
         if (mysql.isConnected()) {
             mysql.close();
         }
+        getServer().getScheduler().cancelTasks(this);
     }
 
     @Override
@@ -50,20 +50,16 @@ public class Main extends JavaPlugin {
         activateConversations();
         registerCommands();
         activateEffects();
-        // /////////////////////DEBUG////////////////////
-        playerrank.put("stelar7", Rank.valueOf("TRAVELER"));
-        playerrace.put("stelar7", "elf");
-        // /////////////////////DEBUG////////////////////
     }
 
     private void activateConversations() {
-        /////////////////////////
-        //WARP LOCATIONS NEEDED//
-        //CLICK BOAT IN HERE:
-        //warps.add(new WarpCuboid("world", xmin,ymin,zmin,xmax,ymax,zmax));
-        //SELECT LOCATION FROM HERE:
-        //SerialWarp.add("Redcrest", new Location(Bukkit.getWorld("world"), 0,0,0));
-        /////////////////////////
+        // ///////////////////////
+        // WARP LOCATIONS NEEDED//
+        // CLICK BOAT IN HERE:
+        warps.add(new WarpCuboid("world", -3, -3, -3, 3, 3, 3));
+        // SELECT LOCATION FROM HERE:
+        SerialWarp.add("Redcrest", new Location(Bukkit.getWorld("world"), 0, 0, 0));
+        // ///////////////////////
         factory = new ConversationFactory(this);
     }
 
@@ -83,8 +79,7 @@ public class Main extends JavaPlugin {
 
     public void activateMySQL() {
 
-        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"),
-                getConfig().getString("database.password"));
+        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"), getConfig().getString("database.password"));
 
         mysql.open();
         try {
@@ -92,15 +87,11 @@ public class Main extends JavaPlugin {
                 getLogger().warning("MySQL not configured propperly!!");
                 return;
             }
-            mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
-            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130), Rank VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130), Rank VARCHAR(130))");
         } catch (final SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public MySQL getMySQL() {
-        return mysql;
     }
 
     private void registerCommands() {

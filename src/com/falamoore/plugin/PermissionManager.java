@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 public class PermissionManager {
 
@@ -93,6 +94,21 @@ public class PermissionManager {
             final String s = rs.getString("Rank");
             rs.close();
             return Rank.valueOf(s);
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getRace(Player p) {
+        try {
+            final ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
+            if (rs.next()) {
+                final String s = rs.getString("Race");
+                rs.close();
+                return s;
+            }
+            return null;
         } catch (final Exception e) {
             e.printStackTrace();
             return null;
