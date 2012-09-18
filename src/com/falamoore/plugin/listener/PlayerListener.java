@@ -25,6 +25,7 @@ import com.falamoore.plugin.Main;
 import com.falamoore.plugin.PermissionManager;
 import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
+import com.falamoore.plugin.runnables.PotionEffects;
 
 public class PlayerListener implements Listener {
 
@@ -32,21 +33,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerRespawn(final PlayerRespawnEvent e) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
-
-            @Override
-            public void run() {
-                final String race = getRace(e.getPlayer());
-                if (race.equalsIgnoreCase("Elf")) {
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1400, 2));
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1400, 2));
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1400, 1));
-                } else if (race.equalsIgnoreCase("Dwarf")) {
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1400, 2));
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1400, 2));
-                }
-            }
-        });
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, new PotionEffects(e.getPlayer()));
     }
 
     @EventHandler

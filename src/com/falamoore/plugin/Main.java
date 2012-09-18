@@ -4,10 +4,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
@@ -17,12 +14,14 @@ import com.falamoore.plugin.commands.PromoteDemote;
 import com.falamoore.plugin.database.MySQL;
 import com.falamoore.plugin.listener.PlayerListener;
 import com.falamoore.plugin.listener.VehicleListener;
+import com.falamoore.plugin.runnables.PotionEffects;
+import com.falamoore.plugin.serializable.SerialCuboid;
 
 public class Main extends JavaPlugin {
 
     public static HashMap<String, String> playerrace = new HashMap<String, String>();
     public static HashMap<String, Rank> playerrank = new HashMap<String, Rank>();
-    public static HashMap<String, String> warps = new HashMap<String, String>();
+    public static HashMap<String, SerialCuboid> warps = new HashMap<String, SerialCuboid>();
 
     public static MySQL mysql;
     BanKick bankick;
@@ -58,31 +57,13 @@ public class Main extends JavaPlugin {
 
     private void activateConversations() {
         factory = new ConversationFactory(this);
-        warps.put("Redcrest", "world, -3, -3, -3 | 3, 3, 3");
-        warps.put("Ermiron", "world, 4, 4, 4 | 10, 10, 10");
-        warps.put("Karaz Ankor", "world, 11, 11, 11 | 17, 17, 17");
+        warps.put("Redcrest", new SerialCuboid("world", -3, -3, -3, 3, 3, 3));
+        warps.put("Ermiron", new SerialCuboid("world", 4, 4, 4, 10, 10, 10));
+        warps.put("Karaz Ankor", new SerialCuboid("world", 11, 11, 11, 17, 17, 17));
     }
 
     private void activateEffects() {
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                for (final String s : playerrace.keySet()) {
-                    final Player p = getServer().getPlayer(s);
-                    if (p == null) {
-                        continue;
-                    }
-                    if (playerrace.get(s).equalsIgnoreCase("Elf")) {
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 1400, 2));
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1400, 2));
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1400, 1));
-                    } else if (playerrace.get(s).equalsIgnoreCase("Dwarf")) {
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 1400, 2));
-                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 1400, 2));
-                    }
-                }
-            }
-        }, 0, 700);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new PotionEffects(), 0, 700);
     }
 
     private void createConfig() {

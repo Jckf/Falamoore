@@ -1,6 +1,5 @@
 package com.falamoore.plugin.conversations;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.Prompt;
@@ -24,8 +23,7 @@ public class WarpPrompt extends ValidatingPrompt {
     @Override
     protected Prompt acceptValidatedInput(ConversationContext cc, String in) {
         final Player tpme = ((Player) cc.getForWhom());
-        final String[] l = Main.warps.get(in).split(",");
-        final Location loc = new Location(Bukkit.getWorld(l[0]), 25, 100, 25);
+        Location loc = Main.warps.get(in).getCenterLocation();
         tpme.teleport(loc);
         tpme.sendMessage("You traveled to " + in);
         return END_OF_CONVERSATION;
@@ -33,8 +31,7 @@ public class WarpPrompt extends ValidatingPrompt {
 
     @Override
     protected boolean isInputValid(ConversationContext arg0, String in) {
-        if (in.equalsIgnoreCase("Redcrest") || in.equalsIgnoreCase("Ermiron") || in.equalsIgnoreCase("Karaz Ankor")) { return true; }
-        return false;
+        return (in.equalsIgnoreCase("Redcrest") || in.equalsIgnoreCase("Ermiron") || in.equalsIgnoreCase("Karaz Ankor"));
     }
 
     @Override
