@@ -1,6 +1,5 @@
 package com.falamoore.plugin.listener;
 
-import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
@@ -16,7 +15,6 @@ import com.falamoore.plugin.conversations.WarpPrompt;
 import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class VehicleListener implements Listener {
-
     Vector v = new Vector(0, 0, 0);
 
     @EventHandler
@@ -31,7 +29,7 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void boatMoveEvent(VehicleMoveEvent e) {
-        if ((e.getVehicle() instanceof Boat) && (e.getVehicle().getPassenger() instanceof Player)) {
+        if (e.getVehicle() instanceof Boat && e.getVehicle().getPassenger() instanceof Player) {
             if (isInsideTPArea(e.getVehicle())) {
                 e.getVehicle().setVelocity(v);
             }
@@ -40,17 +38,16 @@ public class VehicleListener implements Listener {
 
     private boolean isInsideTPArea(Entity e) {
         for (final WarpCuboid s : Main.warps) {
-            if (s.isInside(e)) { return true; }
+            if (s.isInside(e)) return true;
         }
         return false;
     }
 
     @EventHandler
     public void onPlayerEnterBoat(VehicleEnterEvent e) {
-        if ((e.getEntered() instanceof Player) && (e.getVehicle() instanceof Boat)) {
+        if (e.getEntered() instanceof Player && e.getVehicle() instanceof Boat) {
             if (isInsideTPArea(e.getVehicle())) {
-                final Conversation conv = Main.factory.withFirstPrompt(new WarpPrompt()).withLocalEcho(false).buildConversation((Player) e.getEntered());
-                conv.begin();
+                Main.factory.withFirstPrompt(new WarpPrompt()).withLocalEcho(false).buildConversation((Player) e.getEntered()).begin();
             }
         }
     }

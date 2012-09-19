@@ -11,37 +11,36 @@ import com.falamoore.plugin.Main;
 import com.falamoore.plugin.PermissionManager;
 
 public class Maintenance implements CommandExecutor {
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
             if (PermissionManager.getRank((OfflinePlayer) sender).value <= PermissionManager.Rank.JARL.value) {
-                sender.sendMessage("You dont have permission to do this!");
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             } else {
-                if (Main.maintnance) {
-                    Main.maintnance = false;
+                if (Main.maintenance_enabled) {
+                    Main.maintenance_enabled = false;
                     for (final Player p : Bukkit.getServer().getOnlinePlayers()) {
                         if (PermissionManager.getRank(p).value <= PermissionManager.Rank.JARL.value) {
-                            p.kickPlayer("Maintnance started!");
+                            p.kickPlayer("Maintenance started!");
                         }
                     }
                     return true;
                 } else {
-                    Main.maintnance = false;
+                    Main.maintenance_enabled = false;
                 }
             }
         } else {
-            if (Main.maintnance) {
-                Main.maintnance = false;
+            if (Main.maintenance_enabled) {
+                Main.maintenance_enabled = false;
                 for (final Player p : Bukkit.getServer().getOnlinePlayers()) {
                     if (PermissionManager.getRank(p).value <= PermissionManager.Rank.GUIDE.value) {
-                        p.kickPlayer("Maintnance started!");
+                        p.kickPlayer("Maintenance started!");
                     }
                 }
                 return true;
             } else {
-                Main.maintnance = false;
+                Main.maintenance_enabled = false;
             }
         }
         return false;

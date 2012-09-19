@@ -10,11 +10,11 @@ import org.bukkit.entity.Player;
 import com.falamoore.plugin.PermissionManager;
 
 public class StabSamtale implements CommandExecutor {
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
-            sender.sendMessage("You dont have permission to do this");
+            sender.sendMessage("You don't have permission to do this!");
             return true;
         }
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
@@ -24,7 +24,7 @@ public class StabSamtale implements CommandExecutor {
         }
         return true;
     }
-    
+
     private String argstoString(String[] args) {
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.BOLD);

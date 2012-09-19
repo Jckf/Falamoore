@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,8 +31,9 @@ import com.falamoore.plugin.commands.BanKick;
 import com.falamoore.plugin.conversations.RacePrompt;
 import com.falamoore.plugin.runnables.PotionEffects;
 
-public class PlayerListener implements Listener {
+import static org.bukkit.Material.*;
 
+public class PlayerListener implements Listener {
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
 
     @EventHandler
@@ -53,15 +53,14 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void bucket(PlayerBucketEmptyEvent e) {
         if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.USER.value) {
-            if (e.getItemStack().getType() == Material.LAVA_BUCKET) {
-                e.setCancelled(true);
-            }
-            if (e.getItemStack().getType() == Material.WATER_BUCKET) {
-                e.setCancelled(true);
+            switch (e.getItemStack().getType()) {
+                case LAVA_BUCKET:
+                case WATER_BUCKET:
+                    e.setCancelled(true);
             }
         }
     }
-    
+
     @EventHandler
     public void ignite(BlockIgniteEvent e) {
         if (e.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL) {
@@ -94,9 +93,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
-        if (Main.maintnance) {
+        if (Main.maintenance_enabled) {
             if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.JARL.value) {
-                e.disallow(Result.KICK_OTHER, "Maintanance in progress");
+                e.disallow(Result.KICK_OTHER, "Maintenance in progress!");
             } else {
                 e.allow();
             }
@@ -107,7 +106,7 @@ public class PlayerListener implements Listener {
                 e.allow();
             }
             final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getName()));
-            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned untill: " + sdf.format(d));
+            e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned until: " + sdf.format(d));
             // } else if
             // (BanKick.isBanned(e.getPlayer().getAddress().getHostString())) {
             // if

@@ -11,11 +11,10 @@ import com.falamoore.plugin.PermissionManager;
 import com.falamoore.plugin.PermissionManager.Rank;
 
 public class PromoteDemote implements CommandExecutor {
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player && getValue((Player)sender) <= 1) {
-            sender.sendMessage("You dont have permission to do this");
+            sender.sendMessage("You don't have permission to do this!");
             return true;
         }
         if (cmd.getName().equalsIgnoreCase("promote")) {
@@ -23,7 +22,7 @@ public class PromoteDemote implements CommandExecutor {
                 final OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
                 final Rank r = PermissionManager.getRank(p);
                 if ((sender instanceof Player) && (PermissionManager.getRank((Player) sender).value <= r.value)) {
-                    sender.sendMessage("You cant promote to a rank equal or above your own!");
+                    sender.sendMessage("You can't promote to a rank equal to or above your own!");
                     return true;
                 }
                 PermissionManager.setNewRank(p, r.getHigherRank());
@@ -34,7 +33,7 @@ public class PromoteDemote implements CommandExecutor {
                 final OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
                 final Rank r = PermissionManager.getRank(p);
                 if ((sender instanceof Player) && (PermissionManager.getRank((Player) sender).value <= r.value)) {
-                    sender.sendMessage("You cant demote to a rank equal or above your own!");
+                    sender.sendMessage("You can't demote to a rank equal to or above your own!");
                     return true;
                 }
                 PermissionManager.setNewRank(p, r.getLowerRank());

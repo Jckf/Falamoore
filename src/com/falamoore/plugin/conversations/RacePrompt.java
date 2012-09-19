@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import com.falamoore.plugin.Main;
 
 public class RacePrompt extends ValidatingPrompt {
-
     ArrayList<String> acceptable = new ArrayList<String>();
 
     @Override
@@ -45,7 +44,7 @@ public class RacePrompt extends ValidatingPrompt {
     protected boolean isInputValid(ConversationContext cc, String in) {
         return acceptable.contains(in.toLowerCase());
     }
-    
+
     @Override
     protected String getFailedValidationText(ConversationContext context, String invalidInput) {
         return "You entered a invalid option!";

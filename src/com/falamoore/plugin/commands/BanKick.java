@@ -15,17 +15,17 @@ import com.falamoore.plugin.Main;
 import com.falamoore.plugin.PermissionManager;
 
 public class BanKick implements CommandExecutor {
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
-                sender.sendMessage("You dont have permission to do this");
+            if (sender instanceof Player && getValue((Player) sender) <= 2) {
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
                 if (pl == null) {
+                    // Note from Jckf: You can ban a user even if he hasn't played here before...
                     sender.sendMessage("No such player has played on the server before!");
                     return true;
                 }
@@ -48,7 +48,7 @@ public class BanKick implements CommandExecutor {
             }
         } else if (cmd.getName().equalsIgnoreCase("tempban")) {
             if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
-                sender.sendMessage("You dont have permission to do this");
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 2) {
@@ -95,18 +95,18 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("kick")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
-                sender.sendMessage("You dont have permission to do this");
+            if (sender instanceof Player && getValue((Player) sender) <= 1) {
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 1) {
                 final Player pl = Bukkit.getPlayer(args[0]);
-                pl.kickPlayer("You are kicked!\nReason:" + giveReason(args));
+                pl.kickPlayer("You were kicked!\nReason:" + giveReason(args));
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("IPBan")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
-                sender.sendMessage("You dont have permission to do this");
+            if (sender instanceof Player && getValue((Player) sender) <= 2) {
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 2) {
@@ -137,7 +137,7 @@ public class BanKick implements CommandExecutor {
             }
         } else if (cmd.getName().equalsIgnoreCase("iptempban")) {
             if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
-                sender.sendMessage("You dont have permission to do this");
+                sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 2) {

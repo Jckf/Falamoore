@@ -8,7 +8,6 @@ import org.bukkit.potion.PotionEffectType;
 import com.falamoore.plugin.PermissionManager;
 
 public class PotionEffects implements Runnable {
-
     final Player player;
 
     public PotionEffects(Player player) {

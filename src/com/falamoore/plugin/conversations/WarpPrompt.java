@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import com.falamoore.plugin.serializable.SerialWarp;
 
 public class WarpPrompt extends ValidatingPrompt {
-
     @Override
     public String getPromptText(ConversationContext arg0) {
         return "Select destination: Redcrest, Ermiron, Karaz Ankor";
@@ -31,12 +30,17 @@ public class WarpPrompt extends ValidatingPrompt {
 
     @Override
     protected boolean isInputValid(ConversationContext arg0, String in) {
-        return (in.equalsIgnoreCase("Redcrest") || in.equalsIgnoreCase("Ermiron") || in.equalsIgnoreCase("Karaz Ankor"));
+        switch (in.toLowerCase()) {
+            case "redcrest":
+            case "ermiron":
+            case "karaz ankor":
+                return true;
+        }
+        return false;
     }
 
     @Override
     protected String getFailedValidationText(ConversationContext context, String invalidInput) {
-        return "You entered a invalid option!";
+        return "You entered an invalid option!";
     }
-
 }

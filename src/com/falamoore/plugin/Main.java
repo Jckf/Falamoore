@@ -3,16 +3,14 @@ package com.falamoore.plugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.falamoore.plugin.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.conversations.ConversationFactory;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.falamoore.plugin.commands.BanKick;
-import com.falamoore.plugin.commands.EnviromentalControll;
-import com.falamoore.plugin.commands.Maintenance;
-import com.falamoore.plugin.commands.PromoteDemote;
-import com.falamoore.plugin.commands.StabSamtale;
+import com.falamoore.plugin.commands.EnvironmentControl;
 import com.falamoore.plugin.database.MySQL;
 import com.falamoore.plugin.listener.BlockListener;
 import com.falamoore.plugin.listener.PlayerListener;
@@ -22,7 +20,6 @@ import com.falamoore.plugin.serializable.SerialWarp;
 import com.falamoore.plugin.serializable.WarpCuboid;
 
 public class Main extends JavaPlugin {
-
     public static ArrayList<WarpCuboid> warps = new ArrayList<WarpCuboid>();
 
     public static MySQL mysql;
@@ -30,16 +27,15 @@ public class Main extends JavaPlugin {
     PromoteDemote promdem;
     Maintenance maintenance;
     StabSamtale ss;
-    EnviromentalControll envc;
+    EnvironmentControl envc;
     public static ConversationFactory factory;
-    public static boolean maintnance = false;
+    public static boolean maintenance_enabled = false;
     public static Main plugin;
 
     @Override
     public void onDisable() {
-        if (mysql.isConnected()) {
-            mysql.close();
-        }
+        if (mysql.isConnected()) mysql.close();
+
         getServer().getScheduler().cancelTasks(this);
     }
 
@@ -53,11 +49,13 @@ public class Main extends JavaPlugin {
         registerCommands();
         activateEffects();
     }
-    
+
     private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new VehicleListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        PluginManager pm = getServer().getPluginManager();
+
+        pm.registerEvents(new PlayerListener(),this);
+        pm.registerEvents(new VehicleListener(),this);
+        pm.registerEvents(new BlockListener(),this);
     }
 
     private void activateConversations() {
@@ -86,13 +84,18 @@ public class Main extends JavaPlugin {
     }
 
     public void activateMySQL() {
-
-        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"), getConfig().getString("database.password"));
+        mysql = new MySQL(
+            getConfig().getString("database.host"),
+            getConfig().getString("database.port"),
+            getConfig().getString("database.database"),
+            getConfig().getString("database.username"),
+            getConfig().getString("database.password")
+        );
 
         mysql.open();
         try {
-            if ((mysql == null) || !mysql.isConnected()) {
-                getLogger().warning("MySQL not configured propperly!!");
+            if (!mysql.isConnected()) {
+                getLogger().warning("MySQL not configured properly!");
                 return;
             }
             mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
@@ -106,7 +109,7 @@ public class Main extends JavaPlugin {
         bankick = new BanKick();
         promdem = new PromoteDemote();
         maintenance = new Maintenance();
-        envc = new EnviromentalControll();
+        envc = new EnvironmentControl();
         ss = new StabSamtale();
 
         getCommand("ban").setExecutor(bankick);
