@@ -13,6 +13,8 @@ commands:
         usage: /<command>
     rank:
         usage: /<command>
+    perm:
+        usage: /<command>
     maintenance:
         usage: /<command>
     env:
