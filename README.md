@@ -1,4 +1,0 @@
-falamoore plugin
-================
-
-Falamoore plugin
