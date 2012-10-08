@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.conversations.Conversation;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,40 +22,39 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.permissions.PermissionAttachment;
 
 import com.falamoore.plugin.Main;
-import com.falamoore.plugin.PermissionManager;
-import com.falamoore.plugin.PermissionManager.Rank;
 import com.falamoore.plugin.commands.BanKick;
 import com.falamoore.plugin.conversations.RacePrompt;
 import com.falamoore.plugin.runnables.PotionEffects;
-
-import static org.bukkit.Material.*;
 
 public class PlayerListener implements Listener {
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy/HH/mm");
 
     @EventHandler
     public void itemPickup(PlayerPickupItemEvent e) {
-        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+        if (!e.getPlayer().hasPermission("item.pickup")) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void Place(BlockPlaceEvent e) {
-        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+        if (!e.getPlayer().hasPermission("block.place")) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void bucket(PlayerBucketEmptyEvent e) {
-        if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.USER.value) {
+        if (!e.getPlayer().hasPermission("bucket.empty")) {
             switch (e.getItemStack().getType()) {
                 case LAVA_BUCKET:
                 case WATER_BUCKET:
                     e.setCancelled(true);
+                default:
+                    break;
             }
         }
     }
@@ -64,7 +62,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void ignite(BlockIgniteEvent e) {
         if (e.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL) {
-            if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.USER.value) {
+            if (!e.getPlayer().hasPermission("flint.use")) {
                 e.setCancelled(true);
             }
         }
@@ -72,14 +70,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void Brake(BlockBreakEvent e) {
-        if (PermissionManager.getRank(e.getPlayer()).value == PermissionManager.Rank.TRAVELER.value) {
+        if (!e.getPlayer().hasPermission("block.brake")) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onPlayerRespawn(final PlayerRespawnEvent e) {
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, new PotionEffects(e.getPlayer()));
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, new PotionEffects());
     }
 
     @EventHandler
@@ -94,7 +92,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
         if (Main.maintenance_enabled) {
-            if (PermissionManager.getRank(e.getPlayer()).value <= PermissionManager.Rank.JARL.value) {
+            if (!e.getPlayer().hasPermission("maintenance.join")) {
                 e.disallow(Result.KICK_OTHER, "Maintenance in progress!");
             } else {
                 e.allow();
@@ -107,19 +105,6 @@ public class PlayerListener implements Listener {
             }
             final Date d = new Date(BanKick.getExpirationDate(e.getPlayer().getName()));
             e.disallow(Result.KICK_BANNED, BanKick.getBanReason(e.getPlayer().getName()) + "\nBanned until: " + sdf.format(d));
-            // } else if
-            // (BanKick.isBanned(e.getPlayer().getAddress().getHostString())) {
-            // if
-            // (BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString())
-            // <= System.currentTimeMillis()) {
-            // BanKick.unban(e.getPlayer().getAddress().getHostString());
-            // e.allow();
-            // }
-            // final Date d = new
-            // Date(BanKick.getExpirationDate(e.getPlayer().getAddress().getHostString()));
-            // e.disallow(Result.KICK_BANNED,
-            // BanKick.getBanReason(e.getPlayer().getAddress().getHostString())
-            // + "\nBanned untill: " + sdf.format(d));
         } else {
             e.allow();
         }
@@ -131,25 +116,27 @@ public class PlayerListener implements Listener {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Main.plugin, new Runnable() {
                 @Override
                 public void run() {
-                    final Conversation c = Main.factory.withFirstPrompt(new RacePrompt()).withLocalEcho(false).buildConversation(e.getPlayer());
-                    c.begin();
+                    Main.factory.withFirstPrompt(new RacePrompt()).withLocalEcho(false).buildConversation(e.getPlayer()).begin();
                 }
             });
         }
+        final PermissionAttachment attachment = e.getPlayer().addAttachment(Main.plugin);
+        Main.permissions.put(e.getPlayer().getName(), attachment);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         updateLastIP(e.getPlayer());
+        e.getPlayer().removeAttachment(Main.permissions.get(e.getPlayer().getName()));
     }
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
-        final Rank rank = PermissionManager.getRank(e.getPlayer());
-        if (rank == Rank.USER) {
+        final String rank = Main.rank.get(e.getPlayer());
+        if (rank.equalsIgnoreCase("user")) {
             e.setFormat(e.getPlayer() + ": " + e.getMessage());
         } else {
-            e.setFormat(rank.getColor() + "[" + rank.toString() + "] " + e.getPlayer().getName() + ": " + ChatColor.WHITE + e.getMessage());
+            e.setFormat(getColor(rank) + "[" + rank + "] " + e.getPlayer().getName() + ": " + ChatColor.WHITE + e.getMessage());
         }
     }
 
@@ -170,6 +157,21 @@ public class PlayerListener implements Listener {
         } catch (final Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public ChatColor getColor(String rank) {
+        switch (rank.toUpperCase()) {
+            case "GUIDE":
+                return ChatColor.DARK_AQUA;
+            case "EMPEROR":
+                return ChatColor.GREEN;
+            case "JARL":
+                return ChatColor.BLUE;
+            case "TRAVELER":
+                return ChatColor.GRAY;
+            default:
+                return ChatColor.WHITE;
         }
     }
 }

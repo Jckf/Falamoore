@@ -12,23 +12,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.falamoore.plugin.Main;
-import com.falamoore.plugin.PermissionManager;
 
 public class BanKick implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ban")) {
-            if (sender instanceof Player && getValue((Player) sender) <= 2) {
+            if ((sender instanceof Player) && ((Player) sender).hasPermission("ban.use")) {
                 sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
             if (args.length >= 2) {
                 final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
-                if (pl == null) {
-                    // Note from Jckf: You can ban a user even if he hasn't played here before...
-                    sender.sendMessage("No such player has played on the server before!");
-                    return true;
-                }
                 if (isBanned(pl.getName())) {
                     sender.sendMessage("This player is already banned!");
                     return true;
@@ -47,7 +41,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("tempban")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 1)) {
+            if ((sender instanceof Player) && sender.hasPermission("tempban.use")) {
                 sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
@@ -95,7 +89,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("kick")) {
-            if (sender instanceof Player && getValue((Player) sender) <= 1) {
+            if ((sender instanceof Player) && sender.hasPermission("kick.use")) {
                 sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
@@ -105,7 +99,7 @@ public class BanKick implements CommandExecutor {
                 return true;
             }
         } else if (cmd.getName().equalsIgnoreCase("IPBan")) {
-            if (sender instanceof Player && getValue((Player) sender) <= 2) {
+            if ((sender instanceof Player) && sender.hasPermission("ipban.use")) {
                 sender.sendMessage("You don't have permission to do this!");
                 return true;
             }
@@ -135,63 +129,8 @@ public class BanKick implements CommandExecutor {
                 sender.sendMessage("Wrong usage!");
                 return true;
             }
-        } else if (cmd.getName().equalsIgnoreCase("iptempban")) {
-            if ((sender instanceof Player) && (getValue((Player) sender) <= 2)) {
-                sender.sendMessage("You don't have permission to do this!");
-                return true;
-            }
-            if (args.length >= 2) {
-                final OfflinePlayer pl = Bukkit.getOfflinePlayer(args[0]);
-                final Calendar d = Calendar.getInstance();
-                try {
-                    final String[] ds = args[1].split("/");
-                    final int[] dateint = new int[5];
-                    int i = 0;
-                    for (final String s : ds) {
-                        dateint[i] = Integer.parseInt(s);
-                        i++;
-                    }
-                    d.set(dateint[2] + 1900, dateint[1], dateint[0], dateint[3], dateint[4]);
-                } catch (final Exception e) {
-                    sender.sendMessage("Invalid date format!");
-                    sender.sendMessage("dd/mm/yy/hh/mm");
-                    return true;
-                }
-                if (pl == null) {
-                    sender.sendMessage("No such player has played on the server before!");
-                    return true;
-                }
-
-                if (d.getTimeInMillis() <= System.currentTimeMillis()) {
-                    sender.sendMessage("Something went wrong!");
-                    sender.sendMessage("Contact the plugin author!");
-                    return true;
-                }
-                if (!pl.isOnline()) {
-                    sender.sendMessage("Player not online, Can't find IP!");
-                    return true;
-                }
-                final Player pl2 = (Player) pl;
-                if (isBanned(pl2.getAddress().getAddress().getHostAddress())) {
-                    sender.sendMessage("This player is already banned!");
-                    return true;
-                }
-                if (!setBanned(pl2.getAddress().getAddress().getHostAddress(), d.getTimeInMillis(), giveReason(args))) {
-                    sender.sendMessage("Something went wrong when banning " + pl.getName());
-                    return true;
-                }
-                pl2.kickPlayer("You are banned!");
-                return true;
-            } else {
-                sender.sendMessage("Wrong usage!");
-                return true;
-            }
         }
         return false;
-    }
-
-    private int getValue(Player sender) {
-        return PermissionManager.getRank(sender).value;
     }
 
     private String giveReason(String[] args) {

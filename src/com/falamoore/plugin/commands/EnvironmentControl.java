@@ -5,8 +5,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.falamoore.plugin.PermissionManager;
-
 public class EnvironmentControl implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -15,7 +13,7 @@ public class EnvironmentControl implements CommandExecutor {
             return true;
         }
         final Player p = (Player) sender;
-        if (getValue(p) <= 1) {
+        if (!sender.hasPermission("env.use")) {
             sender.sendMessage("You don't have permission to do this!");
             return true;
         }
@@ -64,9 +62,5 @@ public class EnvironmentControl implements CommandExecutor {
             }
         }
         return false;
-    }
-
-    private int getValue(Player sender) {
-        return PermissionManager.getRank(sender).value;
     }
 }

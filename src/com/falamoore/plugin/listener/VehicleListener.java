@@ -29,7 +29,7 @@ public class VehicleListener implements Listener {
 
     @EventHandler
     public void boatMoveEvent(VehicleMoveEvent e) {
-        if (e.getVehicle() instanceof Boat && e.getVehicle().getPassenger() instanceof Player) {
+        if ((e.getVehicle() instanceof Boat) && (e.getVehicle().getPassenger() instanceof Player)) {
             if (isInsideTPArea(e.getVehicle())) {
                 e.getVehicle().setVelocity(v);
             }
@@ -38,14 +38,14 @@ public class VehicleListener implements Listener {
 
     private boolean isInsideTPArea(Entity e) {
         for (final WarpCuboid s : Main.warps) {
-            if (s.isInside(e)) return true;
+            if (s.isInside(e)) { return true; }
         }
         return false;
     }
 
     @EventHandler
     public void onPlayerEnterBoat(VehicleEnterEvent e) {
-        if (e.getEntered() instanceof Player && e.getVehicle() instanceof Boat) {
+        if ((e.getEntered() instanceof Player) && (e.getVehicle() instanceof Boat)) {
             if (isInsideTPArea(e.getVehicle())) {
                 Main.factory.withFirstPrompt(new WarpPrompt()).withLocalEcho(false).buildConversation((Player) e.getEntered()).begin();
             }

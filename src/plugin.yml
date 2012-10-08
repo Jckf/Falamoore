@@ -11,11 +11,7 @@ commands:
         usage: /<command>
     tempban:
         usage: /<command>
-    tempipban:
-        usage: /<command>
-    promote:
-        usage: /<command>
-    demote:
+    rank:
         usage: /<command>
     maintenance:
         usage: /<command>
