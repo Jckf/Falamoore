@@ -142,6 +142,7 @@ public class PlayerListener implements Listener {
 
     private void updateLastIP(Player p) {
         try {
+            if (!Main.mysql.isConnected()) Main.mysql.open();
             Main.mysql.query("UPDATE playerinfo SET LastIP='" + p.getAddress().getAddress().getHostAddress() + "' WHERE Name='" + p.getName() + "'");
         } catch (final SQLException e) {
             e.printStackTrace();
@@ -150,6 +151,7 @@ public class PlayerListener implements Listener {
 
     private boolean dbContains(Player p) {
         try {
+            if (!Main.mysql.isConnected()) Main.mysql.open();
             final ResultSet rs = Main.mysql.query("SELECT * FROM playerinfo WHERE Name='" + p.getName() + "'");
             final boolean ct = rs.next();
             rs.close();

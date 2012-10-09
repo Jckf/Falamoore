@@ -49,7 +49,12 @@ public class MySQL {
     }
 
     public boolean isConnected() {
-        return this.connection != null;
+        try {
+            return (this.connection != null || this.connection.isClosed());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean insert(String table, String[] column, Object[] value) {

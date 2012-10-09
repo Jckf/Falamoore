@@ -142,7 +142,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static void unban(String player) {
-        if (Main.mysql == null) { return; }
+        if (!Main.mysql.isConnected()) Main.mysql.open();
         try {
             Main.mysql.query("DELETE FROM bannedinfo WHERE Name='" + player + "'");
         } catch (final SQLException e) {
@@ -151,7 +151,7 @@ public class BanKick implements CommandExecutor {
     }
 
     private boolean setBanned(String s, long date, String reason) {
-        if (Main.mysql == null) { return false; }
+        if (!Main.mysql.isConnected()) Main.mysql.open();
         Main.mysql.insert("bannedinfo", new String[] {
                 "Name", "BanReson", "BannedTo"
         }, new Object[] {
@@ -161,7 +161,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static String getBanReason(String player) {
-        if (Main.mysql == null) { return null; }
+        if (!Main.mysql.isConnected()) Main.mysql.open();
         try {
             final ResultSet rs = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name='" + player + "'");
             if (rs.next()) {
@@ -178,7 +178,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static boolean isBanned(String pl) {
-        if (!Main.mysql.isConnected()) { return false; }
+        if (!Main.mysql.isConnected()) Main.mysql.open();
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + pl + "'");
             if (temp.first()) {
@@ -194,7 +194,7 @@ public class BanKick implements CommandExecutor {
     }
 
     public static long getExpirationDate(String player) {
-        if (Main.mysql == null) { return Long.MAX_VALUE; }
+        if (!Main.mysql.isConnected()) Main.mysql.open();
         try {
             final ResultSet temp = Main.mysql.query("SELECT * FROM bannedinfo WHERE Name = '" + player + "'");
             if (temp.first()) {
