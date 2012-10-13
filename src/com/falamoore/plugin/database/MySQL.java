@@ -50,8 +50,8 @@ public class MySQL {
 
     public boolean isConnected() {
         try {
-            return (this.connection != null || this.connection.isClosed());
-        } catch (SQLException e) {
+            return (this.connection.isValid(5));
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
         return false;

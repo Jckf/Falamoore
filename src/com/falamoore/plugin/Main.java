@@ -100,7 +100,13 @@ public class Main extends JavaPlugin {
     }
 
     public void activateMySQL() {
-        mysql = new MySQL(getConfig().getString("database.host"), getConfig().getString("database.port"), getConfig().getString("database.database"), getConfig().getString("database.username"), getConfig().getString("database.password"));
+        mysql = new MySQL(
+                getConfig().getString("database.host"), 
+                getConfig().getString("database.port"),
+                getConfig().getString("database.database"), 
+                getConfig().getString("database.username"), 
+                getConfig().getString("database.password")
+                );
 
         mysql.open();
         try {
@@ -136,7 +142,9 @@ public class Main extends JavaPlugin {
     @SuppressWarnings("unchecked")
     public void loadStuff() {
         try {
-            final File perm = new File(getDataFolder(), "permissions.falamoore"), ran = new File(getDataFolder(), "ranks.falamoore"), rac = new File(getDataFolder(), "races.falamoore");
+            final File perm = new File(getDataFolder(), "permissions.falamoore"), 
+                    ran = new File(getDataFolder(), "ranks.falamoore"), 
+                    rac = new File(getDataFolder(), "races.falamoore");
             final ObjectInputStream oos1 = new ObjectInputStream(new FileInputStream(perm));
             final ObjectInputStream oos2 = new ObjectInputStream(new FileInputStream(ran));
             final ObjectInputStream oos3 = new ObjectInputStream(new FileInputStream(rac));
@@ -153,7 +161,9 @@ public class Main extends JavaPlugin {
 
     public void saveStuff() {
         try {
-            final File perm = new File(getDataFolder(), "permissions.falamoore"), ran = new File(getDataFolder(), "ranks.falamoore"), rac = new File(getDataFolder(), "races.falamoore");
+            final File perm = new File(getDataFolder(), "permissions.falamoore"), 
+                    ran = new File(getDataFolder(), "ranks.falamoore"),
+                    rac = new File(getDataFolder(), "races.falamoore");
             final ObjectOutputStream oos1 = new ObjectOutputStream(new FileOutputStream(perm));
             final ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(ran));
             final ObjectOutputStream oos3 = new ObjectOutputStream(new FileOutputStream(rac));
