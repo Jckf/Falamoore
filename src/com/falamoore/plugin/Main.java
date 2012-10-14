@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,7 +35,7 @@ public class Main extends JavaPlugin {
     public static HashMap<String, PermissionAttachment> permissions = new HashMap<String, PermissionAttachment>();
     public static HashMap<String, String> rank = new HashMap<String, String>();
     public static HashMap<String, String> race = new HashMap<String, String>();
-    public static Queue<String> QueryQueue;
+    public static ConcurrentLinkedQueue<String> QueryQueue = new ConcurrentLinkedQueue<String>();
     public static MySQL mysql;
     BanKick bankick;
     PermRank permrank;
