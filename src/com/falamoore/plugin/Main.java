@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,7 +35,7 @@ public class Main extends JavaPlugin {
     public static HashMap<String, PermissionAttachment> permissions = new HashMap<String, PermissionAttachment>();
     public static HashMap<String, String> rank = new HashMap<String, String>();
     public static HashMap<String, String> race = new HashMap<String, String>();
-
+    public static Queue<String> QueryQueue;
     public static MySQL mysql;
     BanKick bankick;
     PermRank permrank;
@@ -64,6 +65,7 @@ public class Main extends JavaPlugin {
         registerCommands();
         activateEffects();
         loadStuff();
+        new BlockQueryQueue();
     }
 
     private void registerListeners() {
@@ -116,6 +118,7 @@ public class Main extends JavaPlugin {
             }
             mysql.query("CREATE TABLE IF NOT EXISTS bannedinfo (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), BannedTo BIGINT, BanReason VARCHAR(130))");
             mysql.query("CREATE TABLE IF NOT EXISTS playerinfo (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), Race VARCHAR(130), LastIP VARCHAR(130))");
+            mysql.query("CREATE TABLE IF NOT EXISTS blocklog (id INT(11) PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(130), x INT(11), y INT(11), z INT(11), Action VARCHAR(130))");
         } catch (final SQLException e) {
             e.printStackTrace();
         }

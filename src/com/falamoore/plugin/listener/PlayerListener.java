@@ -10,9 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -40,13 +37,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void Place(BlockPlaceEvent e) {
-        if (!e.getPlayer().hasPermission("block.place")) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void bucket(PlayerBucketEmptyEvent e) {
         if (!e.getPlayer().hasPermission("bucket.empty")) {
             switch (e.getItemStack().getType()) {
@@ -56,22 +46,6 @@ public class PlayerListener implements Listener {
                 default:
                     break;
             }
-        }
-    }
-
-    @EventHandler
-    public void ignite(BlockIgniteEvent e) {
-        if (e.getCause() == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL) {
-            if (!e.getPlayer().hasPermission("flint.use")) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void Brake(BlockBreakEvent e) {
-        if (!e.getPlayer().hasPermission("block.brake")) {
-            e.setCancelled(true);
         }
     }
 
